@@ -160,7 +160,6 @@ public class Piece : MonoBehaviour
 
     public void Highlight()
     {
-        Debug.Log("light");
         (mesh.materials[0], mesh.materials[2]) = (mesh.materials[2], mesh.materials[0]);
     }
 }

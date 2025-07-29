@@ -334,7 +334,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 7
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &154464721
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,7 +459,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 10
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &373822998
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,7 +584,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 7
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &460568773
 GameObject:
   m_ObjectHideFlags: 0
@@ -694,7 +709,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 5
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &532570480
 GameObject:
   m_ObjectHideFlags: 0
@@ -814,7 +834,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 3
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &599908993
 GameObject:
   m_ObjectHideFlags: 0
@@ -934,7 +959,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 6
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &620896605
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,7 +1084,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 5
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &671254751
 GameObject:
   m_ObjectHideFlags: 0
@@ -1149,6 +1184,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &730937667
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 730937669}
+  - component: {fileID: 730937668}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &730937668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730937667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 998906e54dc5bd84389f901f2e00c439, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deckPoint: 20
+  currentDeckPoint: 0
+  decks: []
+--- !u!4 &730937669
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730937667}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &735977797
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,6 +1337,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &778489011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 778489012}
+  - component: {fileID: 778489013}
+  m_Layer: 0
+  m_Name: DeckPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &778489012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778489011}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12.8, y: 0.4, z: 4.1}
+  m_LocalScale: {x: 0.27, y: 0.4749591, z: 0.38590428}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &778489013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778489011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardPoint: 3
+  rised: 0
+  hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &828041288
 GameObject:
   m_ObjectHideFlags: 0
@@ -1480,7 +1612,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 5
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1044000579
 GameObject:
   m_ObjectHideFlags: 0
@@ -1631,7 +1768,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 8
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1162902709
 GameObject:
   m_ObjectHideFlags: 0
@@ -1751,7 +1893,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 5
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1259179020
 GameObject:
   m_ObjectHideFlags: 0
@@ -1871,7 +2018,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 7
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1308317000
 GameObject:
   m_ObjectHideFlags: 0
@@ -2022,7 +2174,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 4
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1584629387
 GameObject:
   m_ObjectHideFlags: 0
@@ -2142,7 +2299,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 3
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1640265708
 GameObject:
   m_ObjectHideFlags: 0
@@ -2262,7 +2424,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 5
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1744087558
 GameObject:
   m_ObjectHideFlags: 0
@@ -2382,7 +2549,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 3
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &2017216654
 GameObject:
   m_ObjectHideFlags: 0
@@ -2502,7 +2674,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 10
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &2036572700
 GameObject:
   m_ObjectHideFlags: 0
@@ -2532,7 +2709,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b05b8767fd7b2349880c046f1d0ff3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckLimit: 5
   cardColliders: []
   cardMask:
     serializedVersion: 2
@@ -2541,6 +2717,8 @@ MonoBehaviour:
   cameraOffset: 100
   pile: {fileID: 1044000580}
   spreadPoint: {fileID: 1308317001}
+  deckPoint: {fileID: 778489012}
+  deckCounter: 0
 --- !u!4 &2036572702
 Transform:
   m_ObjectHideFlags: 0
@@ -2675,7 +2853,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 2
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1 &2132366499
 GameObject:
   m_ObjectHideFlags: 0
@@ -2795,7 +2978,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9570199dcc9f7e448d98f123b0d468f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPoint: 9
+  rised: 0
   hover: 0
+  inDeck: 0
+  originalScale: {x: 0, y: 0, z: 0}
+  originalDeckPos: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2804,6 +2992,7 @@ SceneRoots:
   - {fileID: 671254753}
   - {fileID: 828041292}
   - {fileID: 1308317001}
+  - {fileID: 778489012}
   - {fileID: 1744087562}
   - {fileID: 620896609}
   - {fileID: 1259179024}
@@ -2825,3 +3014,4 @@ SceneRoots:
   - {fileID: 735977801}
   - {fileID: 2036572702}
   - {fileID: 1044000580}
+  - {fileID: 730937669}

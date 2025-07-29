@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
+    [SerializeField] public int deckPoint = 20;
+    [SerializeField] public int currentDeckPoint = 0;
+    public GameObject[] decks;
 
     private void Awake()
     {

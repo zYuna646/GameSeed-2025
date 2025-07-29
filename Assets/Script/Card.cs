@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
+    public int cardPoint;
+
     private Deck deck;
     public bool rised = false;
-    public bool hover =false;
+    public bool hover = false;
+    public bool inDeck = false;
+    public Vector3 originalScale;
+    public Vector3 originalDeckPos;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,9 +44,8 @@ public class Card : MonoBehaviour
                 }
             }
         }
-        if(deck.cardColliders == null)
+        if(deck.cardColliders.Length == 0)
         {
-            Debug.Log("N");
             hover = false;
             if (rised)
             {
