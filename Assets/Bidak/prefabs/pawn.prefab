@@ -2263,12 +2263,14 @@ MonoBehaviour:
   currentTile: {fileID: 0}
   destinationTile: {fileID: 0}
   isMoving: 0
-  moveSpeed: 0.15
+  moveSpeed: 0.09
   rotationSpeed: 1
   isSelected: 0
   isCaptured: 0
   animationController: {fileID: 0}
+  effectController: {fileID: 0}
   pieceBodyObject: {fileID: 0}
+  movementThreshold: 0.01
 --- !u!114 &1061430254011289858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2438,6 +2440,7 @@ MonoBehaviour:
   currentSpawnEffect: {fileID: 0}
   spawnEffectFadeInTime: 0.5
   spawnEffectFadeOutTime: 0.5
+  pieceBodyVisibilityTime: 0.5
   spawnEffectScaleCurve:
     serializedVersion: 2
     m_Curve:
@@ -2486,11 +2489,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  spawnEffectOffset: {x: 0, y: 0, z: 0}
-  centerSpawnEffect: 1
-  spawnEffectCenterHeight: 1
-  spawnEffectDelayBeforeShow: 2
-  spawnEffectDelayAfterShow: 0
+  currentMoveEffect: {fileID: 0}
+  moveEffectFadeInTime: 0.3
+  moveEffectFadeOutTime: 0.3
 --- !u!1 &111836
 GameObject:
   m_ObjectHideFlags: 0

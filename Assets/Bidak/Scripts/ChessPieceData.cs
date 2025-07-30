@@ -76,6 +76,9 @@ public class ChessPieceData : ScriptableObject
     public float moveEffectDuration = 0.5f;
     public float moveEffectIntensity = 1f;
     public bool loopMoveEffect = true;
+    
+    // New field for precise scale control
+    public Vector3 moveEffectScale = Vector3.one * 0.5f; // Default to half size
 
     // Enum to define different chess piece types
     public enum PieceType

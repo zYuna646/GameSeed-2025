@@ -75,10 +75,8 @@ public class TileController : MonoBehaviour
             return;
         }
 
-        Debug.Log("Trying to update piece");
         // Debug.Log("Current piece controller: " + currentPieceController);
         // Debug.Log("Current piece data: " + currentPieceData);
-        Debug.Log("Tile occupying piece: " + tileOccupyingPiece);
         // Original logic for updating existing piece
         if (tileOccupyingPiece != null &&
             currentPieceObject != null &&
@@ -87,13 +85,8 @@ public class TileController : MonoBehaviour
             )
         {
             // Compare piece data
-            Debug.Log("Comparing piece data");
-            Debug.Log("Current piece data: " + currentPieceController.pieceData);
-            Debug.Log("Tile occupying piece: " + tileOccupyingPiece);
-            Debug.Log("Curent Piece Data: " + currentPieceData);
             if (currentPieceController.pieceData != currentPieceData)
             {
-                Debug.Log("Despawning piece");
                 // Despawn current piece
                 Destroy(currentPieceObject);
                 currentPieceObject = null;

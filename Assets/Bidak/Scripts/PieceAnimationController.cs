@@ -70,11 +70,25 @@ public class PieceAnimationController : MonoBehaviour
         StartCoroutine(PlayAnimationCoroutine(animationType));
     }
 
-    // Method to start moving
+    // Method to start moving with effects
     public void StartMove()
     {
         isMoving = true;
         PlayAnimation(PieceAnimationType.Move);
+
+
+        // Try to play move effect through PieceController
+        Debug.Log("Starting move effect");
+        if (pieceController != null)
+        {
+            Debug.Log("Piece move controller: " + pieceController);
+            PieceEffectController effectController = pieceController.effectController;
+            if (effectController != null)
+            {
+                Debug.Log("Effect move controller: " + effectController);
+                effectController.PlayMoveEffect();
+            }
+        }
     }
 
     // Method to stop moving (return to idle)
@@ -82,6 +96,16 @@ public class PieceAnimationController : MonoBehaviour
     {
         isMoving = false;
         PlayAnimation(PieceAnimationType.Idle);
+
+        // Stop move effect through PieceController
+        if (pieceController != null)
+        {   
+            PieceEffectController effectController = pieceController.effectController;
+            if (effectController != null)
+            {
+                effectController.StopMoveEffect();
+            }
+        }
     }
 
     // Method to start capturing

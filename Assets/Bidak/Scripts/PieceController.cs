@@ -21,14 +21,23 @@ public class PieceController : MonoBehaviour
 
     [Header("Animation")]
     public PieceAnimationController animationController;
+    [Header("Effect")]
+    public PieceEffectController effectController;
 
     [Header("Piece Body")]
     public GameObject pieceBodyObject;
+
+    [Header("Movement Tracking")]
+    private Vector3 lastPosition;
+    public float movementThreshold = 0.01f;
 
     private void Awake()
     {
         if (animationController == null)
             animationController = GetComponent<PieceAnimationController>();
+        if (effectController == null)
+            effectController = GetComponent<PieceEffectController>();
+        isMoving = false;
     }
 
     private void Start()
@@ -56,6 +65,9 @@ public class PieceController : MonoBehaviour
                 animationController.SpawnPiece();
             }
         }
+
+        // Initialize last position
+        lastPosition = transform.position;
     }
 
     private GameObject FindPieceBodyChild()
@@ -78,7 +90,7 @@ public class PieceController : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (destinationTile != null && !isMoving)
         {
@@ -151,7 +163,7 @@ public class PieceController : MonoBehaviour
 
         if (animationController != null)
         {
-            animationController.isMoving = true;
+            animationController.StartMove();
         }
 
         while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
@@ -188,7 +200,7 @@ public class PieceController : MonoBehaviour
 
         if (animationController != null)
         {
-            animationController.isMoving = false;
+            animationController.StopMove();
         }
     }
 
