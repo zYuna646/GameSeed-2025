@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e81babcd9edb50343b442fd58b6e8bf1, type: 3}
+  m_Name: Queen
+  m_EditorClassIdentifier: 
+  pieceName: Queen
+  pieceType: 4
+  pieceColor: {r: 0, g: 0, b: 0, a: 0}
+  modelPrefab: {fileID: 145554, guid: 1f3d02b09d5a9e248bd14c02c9458ec3, type: 3}
+  icon: {fileID: 0}
+  startPosition: {x: 0, y: 0, z: 0}
+  currentPosition: {x: 0, y: 0, z: 0}
+  currentTileNotation: A4
+  points: 9
+  canCastle: 0
+  canEnPassant: 0
+  isFirstMove: 1
+  isDead: 0
+  idleAnimation: {fileID: 7400000, guid: 0f32bec07db70154dacf4fbc48ecf254, type: 3}
+  idleAnimationSpeed: 1
+  idleAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  moveAnimation: {fileID: 7400000, guid: 4108c8e6ed5ef6841b08239d372c0fe2, type: 3}
+  moveAnimationSpeed: 1
+  moveAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spawnAnimation: {fileID: 7400000, guid: 0f32bec07db70154dacf4fbc48ecf254, type: 3}
+  spawnAnimationSpeed: 1
+  spawnAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  capturingAnimation: {fileID: 7400000, guid: 96ee0f2e9123b68459ae99028a0a3b62, type: 3}
+  capturingAnimationSpeed: 1
+  capturingAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  capturedAnimation: {fileID: 7400000, guid: 18ba22f1bb7f13b42bb9b71b872c254f, type: 3}
+  capturedAnimationSpeed: 1
+  capturedAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  deathAnimation: {fileID: 7400000, guid: 8a4ff3a854fe14b449c68d73693ddc38, type: 3}
+  deathAnimationSpeed: 1
+  deathAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  castleAnimation: {fileID: 0}
+  enPassantAnimation: {fileID: 0}
