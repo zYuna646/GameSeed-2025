@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class TileController : MonoBehaviour
 {
@@ -128,8 +130,8 @@ public class TileController : MonoBehaviour
 
         if (pieceToSpawn.modelPrefab != null)
         {
-            // Calculate spawn position with optional spread
-            Vector3 spawnPosition = CalculateSpawnPosition();
+            // Use precise spawn position method
+            Vector3 spawnPosition = GetPreciseSpawnPosition();
 
             // Instantiate piece with static rotation
             currentPieceObject = Instantiate(
@@ -156,6 +158,15 @@ public class TileController : MonoBehaviour
 
             // Name the piece
             currentPieceObject.name = $"{pieceToSpawn.pieceType} ({tileData.chessNotation})";
+
+            // Get or add PieceEffectController
+            PieceEffectController pieceEffectController = currentPieceObject.GetComponent<PieceEffectController>();
+            if (pieceEffectController == null)
+            {
+                pieceEffectController = currentPieceObject.AddComponent<PieceEffectController>();
+            }
+            pieceEffectController.SetPieceData(pieceToSpawn);
+            pieceEffectController.PlaySpawnEffect();
         }
         else
         {
@@ -163,9 +174,44 @@ public class TileController : MonoBehaviour
         }
     }
 
+    // Method to get precise spawn position
+    public Vector3 GetPreciseSpawnPosition()
+    {
+        // First, try to find a child object with SpawnPosition tag
+        Transform spawnPositionChild = transform.Find("SpawnPosition");
+        
+        // If not found by name, search through all children with tag
+        if (spawnPositionChild == null)
+        {
+            spawnPositionChild = transform.Find("*[SpawnPosition]");
+        }
+
+        // If still not found, search through all children
+        if (spawnPositionChild == null)
+        {
+            foreach (Transform child in transform)
+            {
+                if (child.CompareTag("SpawnPosition"))
+                {
+                    spawnPositionChild = child;
+                    break;
+                }
+            }
+        }
+
+        // If a spawn position child is found, return its world position
+        if (spawnPositionChild != null)
+        {
+            return spawnPositionChild.position;
+        }
+
+        // Fallback to tile's transform position with offset
+        return transform.position + spawnOffset;
+    }
+
     private Vector3 CalculateSpawnPosition()
     {
-        Vector3 basePosition = transform.position + spawnOffset;
+        Vector3 basePosition = GetPreciseSpawnPosition();
 
         // Apply horizontal spread
         if (adjustHorizontalPosition)
@@ -201,11 +247,47 @@ public class TileController : MonoBehaviour
 
         // Clear piece data
         currentPieceData = null;
+        tileData.occupyingPiece = null;
     }
 
     // Optional: Method to get current piece
     public GameObject GetCurrentPiece()
     {
         return currentPieceObject;
+    }
+
+    public void CaptureTile(ChessPieceData capturingPieceData)
+    {
+        // If there's a current piece on this tile, capture it
+        if (currentPieceObject != null && currentPieceController != null)
+        {
+            // Trigger capture animation on the current piece
+            currentPieceController.Capture();
+        }
+
+        // Clear the current piece
+        ClearPiece();
+
+        // Set the new piece data for this tile
+        currentPieceData = capturingPieceData;
+        
+        // Update tile data's occupying piece
+        if (tileData != null)
+        {
+            tileData.occupyingPiece = capturingPieceData;
+        }
+
+        // Spawn the new piece
+        TrySpawnPiece();
+    }
+
+    // Optional: Add a method to check if the tile can be captured
+    public bool CanBeCaptured(ChessPieceData capturingPieceData)
+    {
+        // Tile can be captured if it has a piece and the piece is not from the same color
+        // return currentPieceObject != null && 
+        //        currentPieceData != null && 
+        //        currentPieceData.pieceColor != capturingPieceData.pieceColor;
+        return true;
     }
 }

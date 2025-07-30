@@ -19,7 +19,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   startPosition: {x: 0, y: 0, z: 0}
   currentPosition: {x: 0, y: 0, z: 0}
-  currentTileNotation: 
+  currentTileNotation: A1
   points: 1
   canCastle: 0
   canEnPassant: 0
@@ -75,3 +75,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   castleAnimation: {fileID: 0}
   enPassantAnimation: {fileID: 0}
+  spawnEffectPrefab: {fileID: 7761031033666763820, guid: 1eb833340b41fb444b576c4dced8d4dc, type: 3}
+  spawnEffectColor: {r: 0.87169814, g: 0.6874514, b: 0.24177286, a: 1}
+  spawnEffectDuration: 1
+  spawnEffectIntensity: 1

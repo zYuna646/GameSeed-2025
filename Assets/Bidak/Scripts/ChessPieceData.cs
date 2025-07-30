@@ -64,6 +64,19 @@ public class ChessPieceData : ScriptableObject
     public AnimationClip castleAnimation;
     public AnimationClip enPassantAnimation;
 
+    [Header("Spawn Effects")]
+    public GameObject spawnEffectPrefab;
+    public Color spawnEffectColor = Color.white;
+    public float spawnEffectDuration = 1f;
+    public float spawnEffectIntensity = 1f;
+
+    [Header("Move Effects")]
+    public GameObject moveEffectPrefab;
+    public Color moveEffectColor = Color.white;
+    public float moveEffectDuration = 0.5f;
+    public float moveEffectIntensity = 1f;
+    public bool loopMoveEffect = true;
+
     // Enum to define different chess piece types
     public enum PieceType
     {

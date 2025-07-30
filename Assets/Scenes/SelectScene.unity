@@ -294,7 +294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardSize: 8
   whiteTileData: {fileID: 11400000, guid: 464e05f75d0b1c4498d00117577374c7, type: 2}
-  blackTileData: {fileID: 11400000, guid: 464e05f75d0b1c4498d00117577374c7, type: 2}
+  blackTileData: {fileID: 11400000, guid: 3bdb2424003dc474b9cb03aa0e809180, type: 2}
   tileWidth: 1
   tileLength: 1
   tileSeparation: 1

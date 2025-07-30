@@ -208,7 +208,9 @@ public class PieceAnimationController : MonoBehaviour
     {
         float animationTime = 0f;
         Vector3 originalScale = transform.localScale;
-        Vector3 originalPosition = transform.position;
+        
+        // Store the initial local position to maintain exact height
+        Vector3 initialLocalPosition = transform.localPosition;
 
         while (animationTime < animationSpeed)
         {
@@ -223,10 +225,27 @@ public class PieceAnimationController : MonoBehaviour
                     transform.localScale = originalScale * (1f - t);
                     break;
                 case PieceAnimationType.Move:
-                    // Only move during move animation
+                    // Move horizontally while maintaining exact local height
                     if (pieceController != null && pieceController.currentTile != null)
                     {
-                        transform.position = Vector3.Lerp(originalPosition, pieceController.currentTile.transform.position, t);
+                        // Get target world position
+                        Vector3 targetWorldPosition = pieceController.currentTile.transform.position;
+                        
+                        // Interpolate X and Z positions
+                        Vector3 currentLocalPosition = transform.localPosition;
+                        Vector3 targetLocalPosition = transform.parent 
+                            ? transform.parent.InverseTransformPoint(targetWorldPosition) 
+                            : targetWorldPosition;
+                        
+                        // Interpolate only X and Z, keep Y constant
+                        Vector3 newLocalPosition = new Vector3(
+                            Mathf.Lerp(currentLocalPosition.x, targetLocalPosition.x, t),
+                            initialLocalPosition.y,
+                            Mathf.Lerp(currentLocalPosition.z, targetLocalPosition.z, t)
+                        );
+                        
+                        // Set the new local position
+                        transform.localPosition = newLocalPosition;
                     }
                     break;
                 case PieceAnimationType.Capturing:
@@ -240,7 +259,9 @@ public class PieceAnimationController : MonoBehaviour
                 case PieceAnimationType.Idle:
                     // Subtle idle animation without position change
                     float idleOffset = Mathf.Sin(t * Mathf.PI * 2) * 0.05f;
-                    transform.localPosition = originalPosition + transform.up * idleOffset;
+                    Vector3 idleLocalPosition = initialLocalPosition;
+                    idleLocalPosition.y += transform.up.y * idleOffset;
+                    transform.localPosition = idleLocalPosition;
                     break;
             }
 
@@ -248,9 +269,11 @@ public class PieceAnimationController : MonoBehaviour
             yield return null;
         }
 
+        // Ensure final local position is exactly at the initial height
+        transform.localPosition = initialLocalPosition;
+
         // Reset to original state
         transform.localScale = originalScale;
-        transform.position = originalPosition;
     }
 
     // Public methods for specific animations
