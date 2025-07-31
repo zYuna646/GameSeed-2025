@@ -80,6 +80,17 @@ public class ChessPieceData : ScriptableObject
     // New field for precise scale control
     public Vector3 moveEffectScale = Vector3.one * 0.5f; // Default to half size
 
+    [Header("Sound Effects")]
+    public AudioClip moveSoundEffect;
+    public float moveSoundVolume = 1f;
+    public AudioClip captureSoundEffect;
+    public float captureSoundVolume = 1f;
+    public AudioClip spawnSoundEffect;
+    public float spawnSoundVolume = 1f;
+    public float spawnSoundDelay = 0f; // Delay before playing spawn sound
+    public AudioClip deathSoundEffect;
+    public float deathSoundVolume = 1f;
+
     // Enum to define different chess piece types
     public enum PieceType
     {

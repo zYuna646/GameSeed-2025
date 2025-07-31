@@ -33,7 +33,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  moveAnimation: {fileID: 7400000, guid: b789181d013573945825c7b5c6e51e7c, type: 3}
+  moveAnimation: {fileID: 7400000, guid: 39c5a1e19d6559345aa3c57adb589874, type: 3}
   moveAnimationSpeed: 1
   moveAnimationCurve:
     serializedVersion: 2
@@ -85,3 +85,12 @@ MonoBehaviour:
   moveEffectIntensity: 1
   loopMoveEffect: 1
   moveEffectScale: {x: 0.2, y: 0.2, z: 0.2}
+  moveSoundEffect: {fileID: 8300000, guid: df7087e4d8a8bb546bc08ce68632903f, type: 3}
+  moveSoundVolume: 1
+  captureSoundEffect: {fileID: 0}
+  captureSoundVolume: 1
+  spawnSoundEffect: {fileID: 8300000, guid: 5c7b6d4002009e842bd2621585546d19, type: 3}
+  spawnSoundVolume: 1
+  spawnSoundDelay: 1
+  deathSoundEffect: {fileID: 0}
+  deathSoundVolume: 1

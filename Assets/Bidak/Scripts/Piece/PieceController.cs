@@ -5,6 +5,7 @@ public class PieceController : MonoBehaviour
 {
     [Header("Piece Data")]
     public ChessPieceData pieceData;
+    public Color pieceColor;
 
     [Header("Current Tile Information")]
     public TileController currentTile;
@@ -31,12 +32,17 @@ public class PieceController : MonoBehaviour
     private Vector3 lastPosition;
     public float movementThreshold = 0.01f;
 
+    [Header("Sounds")]
+    public PieceSoundsController soundsController;
+
     private void Awake()
     {
         if (animationController == null)
             animationController = GetComponent<PieceAnimationController>();
         if (effectController == null)
             effectController = GetComponent<PieceEffectController>();
+        if (soundsController == null)
+            soundsController = GetComponent<PieceSoundsController>();
         isMoving = false;
     }
 
@@ -63,11 +69,31 @@ public class PieceController : MonoBehaviour
                 }
 
                 animationController.SpawnPiece();
+                if (soundsController != null)
+                {
+                    soundsController.pieceData = pieceData;
+                    soundsController.PlaySpawnSound();
+                }
             }
         }
 
         // Initialize last position
         lastPosition = transform.position;
+    }
+
+    private void Update()
+    {
+        if (pieceData != null)
+        {
+            pieceData.pieceColor = pieceColor;
+        }
+    }
+
+    public void SetPieceColor(Color color)
+    {
+        pieceColor = color;
+        pieceData.pieceColor = color;
+        UpdatePieceAppearance();
     }
 
     private GameObject FindPieceBodyChild()

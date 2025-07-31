@@ -89,6 +89,17 @@ public class PieceAnimationController : MonoBehaviour
                 effectController.PlayMoveEffect();
             }
         }
+        // Try to play move sound through PieceController
+        Debug.Log("Starting move sound");
+        if (pieceController != null)
+        {
+            PieceSoundsController soundsController = pieceController.soundsController;
+            if (soundsController != null)
+            {
+                Debug.Log("Piece move sound controller: " + soundsController);
+                soundsController.PlayMoveSound();
+            }
+        }
     }
 
     // Method to stop moving (return to idle)
@@ -106,12 +117,30 @@ public class PieceAnimationController : MonoBehaviour
                 effectController.StopMoveEffect();
             }
         }
+        // Stop move sound through PieceController
+        if (pieceController != null)
+        {   
+            PieceSoundsController soundsController = pieceController.soundsController;
+            if (soundsController != null)
+            {
+                soundsController.StopMoveSound();
+            }
+        }
     }
 
     // Method to start capturing
     public void StartCapturing()
     {
         PlayAnimation(PieceAnimationType.Capturing);
+        // Try to play capture sound through PieceController
+        if (pieceController != null)
+        {
+            PieceSoundsController soundsController = pieceController.soundsController;
+            if (soundsController != null)
+            {
+                soundsController.PlayCaptureSound();
+            }
+        }
     }
 
     // Method when piece is captured

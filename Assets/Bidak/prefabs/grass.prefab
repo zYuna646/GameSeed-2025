@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7df746ebc08a084c931ad2a8fab95cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCenter: {x: 1.761603, y: 1.347913, z: 1.743786}
-  defaultSize: {x: 1.761603, y: 0.8260437, z: 1.743786}
+  defaultCenter: {x: 0, y: 0, z: 0}
+  defaultSize: {x: 0, y: 0, z: 0}
   colliderSizeOffset: {x: 0, y: 0, z: 0}
   colliderCenterOffset: {x: 0, y: 0, z: 0}
   boardLayerName: Board
@@ -164,7 +164,7 @@ Transform:
   m_GameObject: {fileID: 7240282604945427164}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.373, z: 0}
+  m_LocalPosition: {x: 0, y: 1.398, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children: []
