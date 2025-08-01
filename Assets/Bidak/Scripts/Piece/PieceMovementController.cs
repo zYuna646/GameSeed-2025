@@ -19,6 +19,11 @@ public class PieceMovementController : MonoBehaviour
     public TileController currentTile;
     public TileController destinationTile;
 
+    [Header("Interaction Settings")]
+    public float preCapturePauseDistance = 2f; // Increased pause distance
+    public float rotationInteractionSpeed = 10f; // Speed of rotation interaction
+    public float interactionPauseDuration = 0.5f; // Duration of interaction pause
+
     private void Awake()
     {
         // Try to get references if not assigned
@@ -96,12 +101,102 @@ public class PieceMovementController : MonoBehaviour
             animationController.StartMove();
         }
 
+        // Check for player type interaction
+        bool shouldInteractBeforeCapture = false;
+        PieceController targetPiece = null;
+
+        if (destinationTile != null && 
+            pieceController.pieceData != null && 
+            destinationTile.currentPieceController != null)
+        {
+            ChessPieceData destinationPieceData = destinationTile.currentPieceController.pieceData;
+            
+            // Check if destination tile has a piece with different player type
+            if (destinationPieceData.playerType != pieceController.pieceData.playerType)
+            {
+                shouldInteractBeforeCapture = true;
+                targetPiece = destinationTile.currentPieceController;
+            }
+        }
+
+        // Move towards target position
         while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
         {
+            // Check if we're close enough to interact before capture
+            if (shouldInteractBeforeCapture && 
+                Vector3.Distance(transform.position, targetPosition) <= preCapturePauseDistance)
+            {
+                // Completely stop movement
+                isMoving = false;
+
+                // Stop the animation
+                if (animationController != null)
+                {
+                    animationController.StopMove();
+                }
+
+                if (targetPiece != null)
+                {
+                    // Rotate to face the target piece
+                    Vector3 directionToTarget = targetPiece.transform.position - transform.position;
+                    directionToTarget.y = 0;
+                    Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+
+                    // Rotate current piece
+                    float rotationTime = 0f;
+                    Quaternion startRotation = transform.rotation;
+                    while (rotationTime < 1f)
+                    {
+                        transform.rotation = Quaternion.Slerp(startRotation, targetRotation, rotationTime);
+                        rotationTime += Time.deltaTime * rotationInteractionSpeed;
+                        yield return null;
+                    }
+                    transform.rotation = targetRotation;
+
+                    // Rotate target piece to face current piece
+                    Vector3 directionToCurrentPiece = transform.position - targetPiece.transform.position;
+                    directionToCurrentPiece.y = 0;
+                    Quaternion targetPieceRotation = Quaternion.LookRotation(directionToCurrentPiece);
+
+                    // Rotate target piece
+                    rotationTime = 0f;
+                    Quaternion startTargetRotation = targetPiece.transform.rotation;
+                    while (rotationTime < 1f)
+                    {
+                        targetPiece.transform.rotation = Quaternion.Slerp(startTargetRotation, targetPieceRotation, rotationTime);
+                        rotationTime += Time.deltaTime * rotationInteractionSpeed;
+                        yield return null;
+                    }
+                    targetPiece.transform.rotation = targetPieceRotation;
+
+                    // Trigger capturing animations for both pieces
+                    if (animationController != null)
+                    {
+                        // Current piece starts capturing
+                        animationController.StartCapturing();
+                    }
+
+                    // Target piece is being captured
+                    PieceAnimationController targetAnimationController = targetPiece.GetComponent<PieceAnimationController>();
+                    if (targetAnimationController != null)
+                    {
+                        targetAnimationController.PlayCaptured();
+                    }
+
+                    // Pause for interaction
+                    yield return new WaitForSeconds(interactionPauseDuration);
+                }
+
+                // Break out of movement loop
+                break;
+            }
+
+            // Continue moving only if not in interaction range
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
+        // Ensure final position is exactly at target
         transform.position = targetPosition;
 
         if (destinationTile != null)
@@ -126,6 +221,7 @@ public class PieceMovementController : MonoBehaviour
             destinationTile = null;
         }
 
+        // Ensure movement is stopped
         isMoving = false;
 
         if (animationController != null)

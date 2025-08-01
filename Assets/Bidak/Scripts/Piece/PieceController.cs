@@ -66,6 +66,7 @@ public class PieceController : MonoBehaviour
             }
 
             selectedMaterialIndex = pieceData.selectedMaterialIndex;
+            playerType = pieceData.playerType;
         }
     }
 
@@ -177,7 +178,7 @@ public class PieceController : MonoBehaviour
 
         if (animationController != null)
         {
-            animationController.StartCapturePiece();
+            animationController.StartCapturing();
             animationController.SetCapturedPiece();
         }
 

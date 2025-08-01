@@ -19423,8 +19423,8 @@ GameObject:
   - component: {fileID: 9597688}
   - component: {fileID: 2132634880096612428}
   - component: {fileID: 4688639427156967405}
-  - component: {fileID: 1067516425828755992}
   - component: {fileID: 3329127473756325179}
+  - component: {fileID: 6918979004121413422}
   m_Layer: 0
   m_Name: knight
   m_TagString: Untagged
@@ -19483,17 +19483,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pieceData: {fileID: 0}
-  currentTile: {fileID: 0}
-  destinationTile: {fileID: 0}
-  isMoving: 0
-  moveSpeed: 0.09
-  rotationSpeed: 1
-  isSelected: 0
-  isCaptured: 0
+  selectedMaterialIndex: 0
+  playerType: {r: 1, g: 1, b: 1, a: 1}
+  movementController: {fileID: 0}
   animationController: {fileID: 0}
   effectController: {fileID: 0}
+  soundsController: {fileID: 0}
   pieceBodyObject: {fileID: 0}
-  movementThreshold: 0.01
+  isSelected: 0
+  isCaptured: 0
 --- !u!114 &4688639427156967405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19512,6 +19510,7 @@ MonoBehaviour:
   pieceController: {fileID: 0}
   isAnimating: 0
   isMoving: 0
+  isIdle: 1
   spawnCurve:
     serializedVersion: 2
     m_Curve:
@@ -19633,21 +19632,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   animationSpeed: 1
---- !u!114 &1067516425828755992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c905817a729238846924a230c1ae9540, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  freezeVerticalPosition: 1
-  useKinematicMode: 1
-  colliderType: 0
 --- !u!114 &3329127473756325179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19715,6 +19699,30 @@ MonoBehaviour:
   currentMoveEffect: {fileID: 0}
   moveEffectFadeInTime: 0.3
   moveEffectFadeOutTime: 0.3
+--- !u!114 &6918979004121413422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb5c22d771acb7e47b50edad4577ddcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
+  rotationSpeed: 5
+  movementThreshold: 0.01
+  pieceController: {fileID: 0}
+  animationController: {fileID: 0}
+  soundsController: {fileID: 0}
+  isMoving: 0
+  currentTile: {fileID: 0}
+  destinationTile: {fileID: 0}
+  preCapturePauseDistance: 2
+  rotationInteractionSpeed: 10
+  interactionPauseDuration: 0.5
 --- !u!1 &198856
 GameObject:
   m_ObjectHideFlags: 0

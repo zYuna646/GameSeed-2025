@@ -45,7 +45,7 @@ public class PieceAnimationController : MonoBehaviour
         // Try to get components if not assigned
         if (animator == null)
             animator = GetComponent<Animator>();
-        
+
         if (animationComponent == null)
             animationComponent = GetComponent<Animation>();
 
@@ -114,7 +114,7 @@ public class PieceAnimationController : MonoBehaviour
 
         // Stop move effect through PieceController
         if (pieceController != null)
-        {   
+        {
             PieceEffectController effectController = pieceController.effectController;
             if (effectController != null)
             {
@@ -133,22 +133,52 @@ public class PieceAnimationController : MonoBehaviour
     // Method to start capturing
     public void StartCapturing()
     {
+        Debug.Log("Starting capturing");
         PlayAnimation(PieceAnimationType.Capturing);
         // Try to play capture sound through PieceController
         if (pieceController != null)
         {
+
+            PieceEffectController effectController = pieceController.effectController;
+            if (effectController != null)
+            {
+                Debug.Log("Playing capturing effect");
+                effectController.PlayCapturingEffect();
+            }
+
             PieceSoundsController soundsController = pieceController.soundsController;
             if (soundsController != null)
             {
                 soundsController.PlayCaptureSound();
             }
         }
+
+
     }
 
     // Method when piece is captured
-    public void SetCaptured()
+    public void PlayCaptured()
     {
         PlayAnimation(PieceAnimationType.Captured);
+
+        PieceEffectController effectController = pieceController.effectController;
+        if (effectController != null)
+        {
+            effectController.PlayCapturedEffect();
+        }
+
+        PlayDeath();
+    }
+
+    public void PlayDeath()
+    {
+        PlayAnimation(PieceAnimationType.Death);
+
+        PieceEffectController effectController = pieceController.effectController;
+        if (effectController != null)
+        {
+            effectController.PlayDeathEffect();
+        }
     }
 
     // Method to reset to idle after capture
@@ -269,7 +299,7 @@ public class PieceAnimationController : MonoBehaviour
     {
         float animationTime = 0f;
         Vector3 originalScale = transform.localScale;
-        
+
         // Store the initial local position to maintain exact height
         Vector3 initialLocalPosition = transform.localPosition;
 
@@ -291,20 +321,20 @@ public class PieceAnimationController : MonoBehaviour
                     {
                         // Get target world position
                         Vector3 targetWorldPosition = pieceController.movementController.currentTile.transform.position;
-                        
+
                         // Interpolate X and Z positions
                         Vector3 currentLocalPosition = transform.localPosition;
-                        Vector3 targetLocalPosition = transform.parent 
-                            ? transform.parent.InverseTransformPoint(targetWorldPosition) 
+                        Vector3 targetLocalPosition = transform.parent
+                            ? transform.parent.InverseTransformPoint(targetWorldPosition)
                             : targetWorldPosition;
-                        
+
                         // Interpolate only X and Z, keep Y constant
                         Vector3 newLocalPosition = new Vector3(
                             Mathf.Lerp(currentLocalPosition.x, targetLocalPosition.x, t),
                             initialLocalPosition.y,
                             Mathf.Lerp(currentLocalPosition.z, targetLocalPosition.z, t)
                         );
-                        
+
                         // Set the new local position
                         transform.localPosition = newLocalPosition;
                     }
@@ -342,7 +372,7 @@ public class PieceAnimationController : MonoBehaviour
     {
         isIdle = true; // Set idle to true after spawn
         PlayAnimation(PieceAnimationType.Spawn);
-        
+
         // Start a coroutine to transition to Idle after spawn animation
         StartCoroutine(TransitionToIdleAfterSpawn());
     }
@@ -351,20 +381,19 @@ public class PieceAnimationController : MonoBehaviour
     {
         // Wait for the spawn animation duration
         yield return new WaitForSeconds(pieceData != null ? pieceData.spawnAnimationSpeed : 1f);
-        
+
         // Transition to Idle (though it's already set to true)
         IdlePiece();
     }
 
-    public void IdlePiece() 
+    public void IdlePiece()
     {
         isIdle = true;
         PlayAnimation(PieceAnimationType.Idle);
     }
     public void MovePiece() => PlayAnimation(PieceAnimationType.Move);
-    public void StartCapturePiece() => PlayAnimation(PieceAnimationType.Capturing);
     public void SetCapturedPiece() => PlayAnimation(PieceAnimationType.Captured);
     public void DestroyPiece() => PlayAnimation(PieceAnimationType.Death);
     public void CastlePiece() => PlayAnimation(PieceAnimationType.Castle);
     public void EnPassantPiece() => PlayAnimation(PieceAnimationType.EnPassant);
-} 
+}

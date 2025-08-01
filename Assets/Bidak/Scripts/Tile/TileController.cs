@@ -123,12 +123,15 @@ public class TileController : MonoBehaviour
 
         if (pieceToSpawn.modelPrefab != null)
         {
+            // Create an instance of the piece data to avoid modifying the original
+            ChessPieceData instancePieceData = Instantiate(pieceToSpawn);
+            
             // Use precise spawn position method
             Vector3 spawnPosition = GetPreciseSpawnPosition();
 
             // Instantiate piece with static rotation
             currentPieceObject = Instantiate(
-                pieceToSpawn.modelPrefab,
+                instancePieceData.modelPrefab,
                 spawnPosition,
                 Quaternion.Euler(pieceRotation),
                 transform
@@ -145,7 +148,7 @@ public class TileController : MonoBehaviour
             }
 
             // Set piece data in PieceController
-            currentPieceController.SetPieceData(pieceToSpawn);
+            currentPieceController.SetPieceData(instancePieceData);
             
             // Set current tile through movement controller
             if (currentPieceController.movementController != null)
@@ -154,11 +157,11 @@ public class TileController : MonoBehaviour
             }
 
             // Set current piece data
-            currentPieceData = pieceToSpawn;
-            tileData.occupyingPiece = pieceToSpawn;
+            currentPieceData = instancePieceData;
+            tileData.occupyingPiece = instancePieceData;
 
             // Name the piece
-            currentPieceObject.name = $"{pieceToSpawn.pieceType} ({tileData.chessNotation})";
+            currentPieceObject.name = $"{instancePieceData.pieceType} ({tileData.chessNotation})";
 
             // Get or add PieceEffectController
             PieceEffectController pieceEffectController = currentPieceObject.GetComponent<PieceEffectController>();
@@ -166,7 +169,7 @@ public class TileController : MonoBehaviour
             {
                 pieceEffectController = currentPieceObject.AddComponent<PieceEffectController>();
             }
-            pieceEffectController.SetPieceData(pieceToSpawn);
+            pieceEffectController.SetPieceData(instancePieceData);
             pieceEffectController.PlaySpawnEffect();
         }
         else

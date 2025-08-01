@@ -100,6 +100,24 @@ public class ChessPieceData : ScriptableObject
     public AudioClip deathSoundEffect;
     public float deathSoundVolume = 1f;
 
+    [Header("Capture Effects")]
+    public GameObject capturingEffectPrefab;
+    public Color capturingEffectColor = Color.white;
+    public float capturingEffectDuration = 0.5f;
+    public float capturingEffectIntensity = 1f;
+
+    [Header("Captured Effects")]
+    public GameObject capturedEffectPrefab;
+    public Color capturedEffectColor = Color.white;
+    public float capturedEffectDuration = 0.5f;
+    public float capturedEffectIntensity = 1f;
+
+    [Header("Death Effects")]
+    public GameObject deathEffectPrefab;
+    public Color deathEffectColor = Color.white;
+    public float deathEffectDuration = 1f;
+    public float deathEffectIntensity = 1f;
+
     // Enum to define different chess piece types
     public enum PieceType
     {
@@ -221,5 +239,30 @@ public class ChessPieceData : ScriptableObject
     public void SetEnPassantAnimation(AnimationClip clip)
     {
         enPassantAnimation = clip;
+    }
+
+    // Methods to set effects
+    public void SetCapturingEffect(GameObject effectPrefab, Color? color = null, float duration = 0.5f, float intensity = 1f)
+    {
+        capturingEffectPrefab = effectPrefab;
+        capturingEffectColor = color ?? Color.white;
+        capturingEffectDuration = duration;
+        capturingEffectIntensity = intensity;
+    }
+
+    public void SetCapturedEffect(GameObject effectPrefab, Color? color = null, float duration = 0.5f, float intensity = 1f)
+    {
+        capturedEffectPrefab = effectPrefab;
+        capturedEffectColor = color ?? Color.white;
+        capturedEffectDuration = duration;
+        capturedEffectIntensity = intensity;
+    }
+
+    public void SetDeathEffect(GameObject effectPrefab, Color? color = null, float duration = 1f, float intensity = 1f)
+    {
+        deathEffectPrefab = effectPrefab;
+        deathEffectColor = color ?? Color.white;
+        deathEffectDuration = duration;
+        deathEffectIntensity = intensity;
     }
 }
