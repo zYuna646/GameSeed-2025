@@ -15,6 +15,7 @@ public class PieceAnimationController : MonoBehaviour
     [Header("Animation States")]
     public bool isAnimating = false;
     public bool isMoving = false;
+    public bool isIdle = true; // New boolean to replace Idle trigger
 
     [Header("Animation Curves")]
     public AnimationCurve spawnCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
@@ -55,10 +56,11 @@ public class PieceAnimationController : MonoBehaviour
 
     private void Update()
     {
-        // Update animator boolean for move state
+        // Update animator boolean for move and idle states
         if (animator != null)
         {
             animator.SetBool("IsMoving", isMoving);
+            animator.SetBool("IsIdle", isIdle);
         }
     }
 
@@ -74,8 +76,8 @@ public class PieceAnimationController : MonoBehaviour
     public void StartMove()
     {
         isMoving = true;
+        isIdle = false; // Set idle to false when starting to move
         PlayAnimation(PieceAnimationType.Move);
-
 
         // Try to play move effect through PieceController
         Debug.Log("Starting move effect");
@@ -89,6 +91,7 @@ public class PieceAnimationController : MonoBehaviour
                 effectController.PlayMoveEffect();
             }
         }
+
         // Try to play move sound through PieceController
         Debug.Log("Starting move sound");
         if (pieceController != null)
@@ -106,6 +109,7 @@ public class PieceAnimationController : MonoBehaviour
     public void StopMove()
     {
         isMoving = false;
+        isIdle = true; // Set idle to true when stopping move
         PlayAnimation(PieceAnimationType.Idle);
 
         // Stop move effect through PieceController
@@ -116,10 +120,8 @@ public class PieceAnimationController : MonoBehaviour
             {
                 effectController.StopMoveEffect();
             }
-        }
-        // Stop move sound through PieceController
-        if (pieceController != null)
-        {   
+
+            // Stop move sound through PieceController
             PieceSoundsController soundsController = pieceController.soundsController;
             if (soundsController != null)
             {
@@ -229,6 +231,7 @@ public class PieceAnimationController : MonoBehaviour
     // Play animation through Animator
     private void PlayAnimatorAnimation(PieceAnimationType animationType)
     {
+        // Remove Idle trigger, use IsIdle boolean instead
         string triggerName = animationType switch
         {
             PieceAnimationType.Spawn => "Spawn",
@@ -244,7 +247,12 @@ public class PieceAnimationController : MonoBehaviour
 
         if (!string.IsNullOrEmpty(triggerName))
         {
-            animator.SetTrigger(triggerName);
+            // Set IsIdle boolean for Animator
+            if (animator != null)
+            {
+                animator.SetBool("IsIdle", isIdle);
+                animator.SetTrigger(triggerName);
+            }
         }
     }
 
@@ -332,6 +340,7 @@ public class PieceAnimationController : MonoBehaviour
     // Public methods for specific animations
     public void SpawnPiece()
     {
+        isIdle = true; // Set idle to true after spawn
         PlayAnimation(PieceAnimationType.Spawn);
         
         // Start a coroutine to transition to Idle after spawn animation
@@ -343,10 +352,15 @@ public class PieceAnimationController : MonoBehaviour
         // Wait for the spawn animation duration
         yield return new WaitForSeconds(pieceData != null ? pieceData.spawnAnimationSpeed : 1f);
         
-        // Transition to Idle
+        // Transition to Idle (though it's already set to true)
         IdlePiece();
     }
-    public void IdlePiece() => PlayAnimation(PieceAnimationType.Idle);
+
+    public void IdlePiece() 
+    {
+        isIdle = true;
+        PlayAnimation(PieceAnimationType.Idle);
+    }
     public void MovePiece() => PlayAnimation(PieceAnimationType.Move);
     public void StartCapturePiece() => PlayAnimation(PieceAnimationType.Capturing);
     public void SetCapturedPiece() => PlayAnimation(PieceAnimationType.Captured);

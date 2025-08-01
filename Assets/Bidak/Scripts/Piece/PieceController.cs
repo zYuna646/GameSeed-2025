@@ -109,12 +109,7 @@ public class PieceController : MonoBehaviour
 
     private void UpdateChildObjectMaterials()
     {
-        Debug.Log("Updating child object materials for piece: " + pieceData.pieceName);
-        Debug.Log("Available materials count: " + pieceData.availableMaterials.Count);
-        Debug.Log("Selected material index: " + pieceData.selectedMaterialIndex);
-        Debug.Log("Selected material: " + pieceData.availableMaterials[pieceData.selectedMaterialIndex]);
         if (pieceData == null || pieceData.availableMaterials[pieceData.selectedMaterialIndex] == null) return;
-        Debug.Log("Start Updating materials for piece: " + pieceData.pieceName);
         // Find all child objects with PieceBody tag
         Transform[] allChildren = GetComponentsInChildren<Transform>(true);
 
