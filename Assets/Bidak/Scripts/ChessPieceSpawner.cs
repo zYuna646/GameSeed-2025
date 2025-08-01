@@ -164,7 +164,6 @@ public class ChessPieceSpawner : MonoBehaviour
         // Create piece data
         ChessPieceData pieceData = ScriptableObject.CreateInstance<ChessPieceData>();
         pieceData.pieceType = pieceType;
-        pieceData.pieceColor = pieceColor;
         pieceData.startPosition = position;
         pieceData.currentPosition = position;
         pieceData.SetDefaultMovement();

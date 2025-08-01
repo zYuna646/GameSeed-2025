@@ -196,7 +196,6 @@ public class ChessBoardManager : MonoBehaviour
         for (int i = 0; i < pieceTypes.Length; i++)
         {
             var piece = Instantiate(pieceTypes[i]);
-            piece.pieceColor = Color.white;
             piece.startPosition = boardTiles[i, 1].worldPosition;
             defaultWhitePieces.Add(piece);
         }
@@ -205,7 +204,6 @@ public class ChessBoardManager : MonoBehaviour
         for (int i = 0; i < boardSize; i++)
         {
             var pawn = CreatePiece(ChessPieceData.PieceType.Pawn);
-            pawn.pieceColor = Color.white;
             pawn.startPosition = boardTiles[i, 1].worldPosition;
             defaultWhitePieces.Add(pawn);
         }
@@ -214,7 +212,6 @@ public class ChessBoardManager : MonoBehaviour
         for (int i = 0; i < pieceTypes.Length; i++)
         {
             var piece = Instantiate(pieceTypes[i]);
-            piece.pieceColor = Color.black;
             piece.startPosition = boardTiles[i, 6].worldPosition;
             defaultBlackPieces.Add(piece);
         }
@@ -223,7 +220,6 @@ public class ChessBoardManager : MonoBehaviour
         for (int i = 0; i < boardSize; i++)
         {
             var pawn = CreatePiece(ChessPieceData.PieceType.Pawn);
-            pawn.pieceColor = Color.black;
             pawn.startPosition = boardTiles[i, 6].worldPosition;
             defaultBlackPieces.Add(pawn);
         }
@@ -267,7 +263,6 @@ public class ChessBoardManager : MonoBehaviour
                 BoardTileData targetTile = GetTileByNotation(piecePos.chessNotation);
                 if (targetTile != null)
                 {
-                    piecePos.piece.pieceColor = piecePos.pieceColor;
                     PlacePieceOnBoard(piecePos.piece, targetTile.worldPosition);
                 }
             }
@@ -296,7 +291,6 @@ public class ChessBoardManager : MonoBehaviour
         
         if (targetTile != null)
         {
-            piece.pieceColor = pieceColor;
             PlacePieceOnBoard(piece, targetTile.worldPosition);
         }
     }

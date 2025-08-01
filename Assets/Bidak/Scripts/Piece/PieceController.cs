@@ -1,49 +1,38 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic; // Added for List
 
 public class PieceController : MonoBehaviour
 {
     [Header("Piece Data")]
     public ChessPieceData pieceData;
-    public Color pieceColor;
 
-    [Header("Current Tile Information")]
-    public TileController currentTile;
-    public TileController destinationTile;
+    public int selectedMaterialIndex = 0;
+    public Color playerType = Color.white;
 
-    [Header("Movement")]
-    public bool isMoving = false;
-    public float moveSpeed = 3f;
-    public float rotationSpeed = 5f;
+    [Header("Component References")]
+    public PieceMovementController movementController;
+    public PieceAnimationController animationController;
+    public PieceEffectController effectController;
+    public PieceSoundsController soundsController;
+
+    [Header("Piece Body")]
+    public GameObject pieceBodyObject;
 
     [Header("State")]
     public bool isSelected = false;
     public bool isCaptured = false;
 
-    [Header("Animation")]
-    public PieceAnimationController animationController;
-    [Header("Effect")]
-    public PieceEffectController effectController;
-
-    [Header("Piece Body")]
-    public GameObject pieceBodyObject;
-
-    [Header("Movement Tracking")]
-    private Vector3 lastPosition;
-    public float movementThreshold = 0.01f;
-
-    [Header("Sounds")]
-    public PieceSoundsController soundsController;
-
     private void Awake()
     {
+        if (movementController == null)
+            movementController = GetComponent<PieceMovementController>();
         if (animationController == null)
             animationController = GetComponent<PieceAnimationController>();
         if (effectController == null)
             effectController = GetComponent<PieceEffectController>();
         if (soundsController == null)
             soundsController = GetComponent<PieceSoundsController>();
-        isMoving = false;
     }
 
     private void Start()
@@ -75,24 +64,84 @@ public class PieceController : MonoBehaviour
                     soundsController.PlaySpawnSound();
                 }
             }
-        }
 
-        // Initialize last position
-        lastPosition = transform.position;
+            selectedMaterialIndex = pieceData.selectedMaterialIndex;
+        }
     }
 
     private void Update()
     {
         if (pieceData != null)
         {
-            pieceData.pieceColor = pieceColor;
+            Debug.Log("Updating piece appearance for piece: " + pieceData.pieceName);
+            if (pieceData.selectedMaterialIndex != selectedMaterialIndex)
+            {
+                pieceData.selectedMaterialIndex = selectedMaterialIndex;
+                UpdatePieceAppearance();
+            }
+
+            if (pieceData.playerType != playerType)
+            {
+                pieceData.playerType = playerType;
+            }
+        }
+        
+        // Removed old pieceColor update logic
+    }
+
+    private void UpdatePieceAppearance()
+    {
+        if (pieceData == null) return;
+
+        // // Update main renderer
+        // Renderer mainRenderer = GetComponent<Renderer>();
+        // if (mainRenderer != null)
+        // {
+        //     if (pieceData.availableMaterials[pieceData.selectedMaterialIndex] != null)
+        //     {
+        //         mainRenderer.material = pieceData.availableMaterials[pieceData.selectedMaterialIndex];
+        //     }
+        // }
+
+        // Update child objects with PieceBody tag
+        UpdateChildObjectMaterials();
+    }
+
+    private void UpdateChildObjectMaterials()
+    {
+        Debug.Log("Updating child object materials for piece: " + pieceData.pieceName);
+        Debug.Log("Available materials count: " + pieceData.availableMaterials.Count);
+        Debug.Log("Selected material index: " + pieceData.selectedMaterialIndex);
+        Debug.Log("Selected material: " + pieceData.availableMaterials[pieceData.selectedMaterialIndex]);
+        if (pieceData == null || pieceData.availableMaterials[pieceData.selectedMaterialIndex] == null) return;
+        Debug.Log("Start Updating materials for piece: " + pieceData.pieceName);
+        // Find all child objects with PieceBody tag
+        Transform[] allChildren = GetComponentsInChildren<Transform>(true);
+
+        foreach (Transform child in allChildren)
+        {
+            if (child.CompareTag("PieceBody"))
+            {
+                // Ambil semua Renderer di dalam child tersebut, termasuk nested
+                Renderer[] renderers = child.GetComponentsInChildren<Renderer>(true);
+
+                foreach (Renderer renderer in renderers)
+                {
+                    // Ganti semua material di renderer ini
+                    Material[] newMats = new Material[renderer.materials.Length];
+                    for (int i = 0; i < newMats.Length; i++)
+                    {
+                        newMats[i] = pieceData.availableMaterials[pieceData.selectedMaterialIndex];
+                    }
+                    renderer.materials = newMats;
+                }
+            }
         }
     }
 
     public void SetPieceColor(Color color)
     {
-        pieceColor = color;
-        pieceData.pieceColor = color;
+        // Removed pieceColor logic
         UpdatePieceAppearance();
     }
 
@@ -116,14 +165,6 @@ public class PieceController : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (destinationTile != null && !isMoving)
-        {
-            SetDestinationTile(destinationTile);
-        }
-    }
-
     public void SetPieceData(ChessPieceData data)
     {
         pieceData = data;
@@ -132,101 +173,6 @@ public class PieceController : MonoBehaviour
         if (animationController != null)
         {
             animationController.pieceData = data;
-        }
-    }
-
-    public void SetCurrentTile(TileController tile)
-    {
-        currentTile = tile;
-
-        if (pieceData != null)
-        {
-            pieceData.currentTileNotation = tile.tileData?.chessNotation;
-        }
-    }
-
-    public void SetDestinationTile(TileController tile)
-    {
-        destinationTile = tile;
-
-        // Check if destination tile can be captured
-
-        // Immediately move to the destination
-        if (destinationTile != null)
-        {
-            // Use precise spawn position method
-            Vector3 destinationPosition = destinationTile.GetPreciseSpawnPosition();
-            StartCoroutine(RotateAndMove(destinationPosition));
-        }
-    }
-
-    private IEnumerator RotateAndMove(Vector3 targetPosition)
-    {
-        Vector3 directionToDestination = targetPosition - transform.position;
-        directionToDestination.y = 0;
-
-        Quaternion targetRotation = Quaternion.LookRotation(directionToDestination);
-
-        while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-            yield return null;
-        }
-
-        transform.rotation = targetRotation;
-
-        MoveTo(targetPosition);
-    }
-
-    public void MoveTo(Vector3 targetPosition)
-    {
-        StartCoroutine(MoveToCoroutine(targetPosition));
-    }
-
-    private System.Collections.IEnumerator MoveToCoroutine(Vector3 targetPosition)
-    {
-        isMoving = true;
-
-        if (animationController != null)
-        {
-            animationController.StartMove();
-        }
-
-        while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
-
-        transform.position = targetPosition;
-
-        if (destinationTile != null)
-        {
-            TileController previousTile = currentTile;
-
-            SetCurrentTile(destinationTile);
-
-            if (previousTile != null)
-            {
-                previousTile.ClearPiece();
-            }
-            if (destinationTile != null &&
-         pieceData != null &&
-         destinationTile.CanBeCaptured(pieceData))
-            {
-                // Capture the destination tile
-                destinationTile.CaptureTile(pieceData);
-            }
-
-
-            destinationTile = null;
-        }
-
-        isMoving = false;
-
-        if (animationController != null)
-        {
-            animationController.StopMove();
         }
     }
 
@@ -255,16 +201,29 @@ public class PieceController : MonoBehaviour
         transform.localScale = isSelected ? Vector3.one * 1.2f : Vector3.one;
     }
 
-    private void UpdatePieceAppearance()
+    public void SetPlayerType(Color playerType)
     {
-        if (pieceData == null) return;
-
-        Renderer renderer = GetComponent<Renderer>();
-        if (renderer != null)
+        if (pieceData != null)
         {
-            Material material = new Material(renderer.sharedMaterial);
-            material.color = pieceData.pieceColor;
-            renderer.material = material;
+            pieceData.playerType = playerType;
+        }
+    }
+
+    public void CycleSelectedMaterial()
+    {
+        if (pieceData != null)
+        {
+            pieceData.selectedMaterialIndex = (pieceData.selectedMaterialIndex + 1) % pieceData.availableMaterials.Count;
+            UpdatePieceAppearance();
+        }
+    }
+
+    public void SetMaterial(int index)
+    {
+        if (pieceData != null)
+        {
+            pieceData.selectedMaterialIndex = index;
+            UpdatePieceAppearance();
         }
     }
 }

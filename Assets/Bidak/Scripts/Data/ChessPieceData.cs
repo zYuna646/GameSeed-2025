@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic; // Added for List
 
 [CreateAssetMenu(fileName = "New Chess Piece", menuName = "Chess/Piece Data")]
 public class ChessPieceData : ScriptableObject
@@ -6,7 +7,15 @@ public class ChessPieceData : ScriptableObject
     [Header("Piece Identification")]
     public string pieceName;
     public PieceType pieceType;
-    public Color pieceColor; // Added to distinguish between white and black pieces
+    
+    [Header("Player Identification")]
+    public Color playerType = Color.white;
+    
+    [Header("Material Selection")]
+    public List<Material> availableMaterials = new List<Material>();
+    public int selectedMaterialIndex = 0;
+
+    // Enum to define player types
 
     [Header("Visual References")]
     public GameObject modelPrefab;

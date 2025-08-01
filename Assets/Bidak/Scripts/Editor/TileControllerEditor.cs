@@ -44,7 +44,6 @@ public class TileControllerEditor : Editor
             if (tileController.currentPieceData != null)
             {
                 EditorGUILayout.LabelField($"Piece Type: {tileController.currentPieceData.pieceType}");
-                EditorGUILayout.LabelField($"Piece Color: {tileController.currentPieceData.pieceColor}");
             }
             else
             {

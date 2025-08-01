@@ -143,7 +143,12 @@ public class TileController : MonoBehaviour
 
             // Set piece data in PieceController
             currentPieceController.SetPieceData(pieceToSpawn);
-            currentPieceController.SetCurrentTile(this);
+            
+            // Set current tile through movement controller
+            if (currentPieceController.movementController != null)
+            {
+                currentPieceController.movementController.SetCurrentTile(this);
+            }
 
             // Set current piece data
             currentPieceData = pieceToSpawn;

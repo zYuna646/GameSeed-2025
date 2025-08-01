@@ -74,7 +74,7 @@ public class BoardTileData : ScriptableObject
         }
 
         // If occupied, check if it's an enemy piece that can be captured
-        return occupyingPiece.pieceColor != movingPiece.pieceColor;
+        return occupyingPiece.playerType != movingPiece.playerType;
     }
 
     // Reset tile to initial state

@@ -279,10 +279,10 @@ public class PieceAnimationController : MonoBehaviour
                     break;
                 case PieceAnimationType.Move:
                     // Move horizontally while maintaining exact local height
-                    if (pieceController != null && pieceController.currentTile != null)
+                    if (pieceController != null && pieceController.movementController != null && pieceController.movementController.currentTile != null)
                     {
                         // Get target world position
-                        Vector3 targetWorldPosition = pieceController.currentTile.transform.position;
+                        Vector3 targetWorldPosition = pieceController.movementController.currentTile.transform.position;
                         
                         // Interpolate X and Z positions
                         Vector3 currentLocalPosition = transform.localPosition;

@@ -14,7 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pieceName: Soldier
   pieceType: 0
-  pieceColor: {r: 0, g: 0, b: 0, a: 0}
+  playerType: 0
+  availableMaterials:
+  - {fileID: 2100000, guid: 792a4bad9e08b8e41bfbd3f0b8aac1ab, type: 2}
+  - {fileID: 2100000, guid: 54f19161a54e56442a8dd7f6239fc93b, type: 2}
+  - {fileID: 2100000, guid: 98a7fdcb4ebb44344b4afe0424d44b82, type: 2}
+  - {fileID: 2100000, guid: 26fed0ad2288580409bf94257121cd0f, type: 2}
+  - {fileID: 2100000, guid: f9ec407a080d408459742617c9dc6607, type: 2}
+  selectedMaterialIndex: 0
   modelPrefab: {fileID: 111318, guid: c66d92d18b18bef4b8ba205c60fd747f, type: 3}
   icon: {fileID: 0}
   startPosition: {x: 0, y: 0, z: 0}
