@@ -6,6 +6,12 @@ TagManager:
   tags:
   - Piece
   - Manager
+  - SpawnPosition
+  - Tile
+  - SpawnEffect
+  - PieceBody
+  - SlashEffect
+  - HitEffect
   layers:
   - Default
   - TransparentFX
@@ -17,7 +23,7 @@ TagManager:
   - Holder
   - Card
   - Tile
-  - 
+  - Board
   - 
   - 
   - 
