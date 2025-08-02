@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityEngine.GraphicsBuffer;
 
+
 public class Piece : MonoBehaviour
 {
     Rigidbody rb;
@@ -21,12 +22,15 @@ public class Piece : MonoBehaviour
     RaycastHit hit;
     Vector3 startPosition;
     Vector3 closestHolder;
+
+    
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         mesh = GetComponent<MeshRenderer>();
         startPosition = transform.position;
+        
     }
 
     // Update is called once per frame
@@ -56,9 +60,9 @@ public class Piece : MonoBehaviour
     {
         if (holder.Length > 0)
         {
-            if (holder[0].GetComponent<Holder>().contained)
+            if (holder[holder.Length - 1].GetComponent<Holder>().contained)
             {
-                holder[0].GetComponent<Holder>().contained = false;
+                holder[holder.Length - 1].GetComponent<Holder>().contained = false;
             }
         }
         cek = false;
@@ -90,14 +94,14 @@ public class Piece : MonoBehaviour
 
     public void SnapToHolder()
     {
-        if (holder.Length == 1)
+        if (holder.Length > 0)
         {
-            if (CheckHolder(holder[0]))
+            if (CheckHolder(holder[holder.Length - 1 ]))
             {
                 chase = true;
                 stray = false;
-                movingPosition = holder[0].transform.position + new Vector3(0, up, 0);
-                holder[0].GetComponent<Holder>().contained = true;
+                movingPosition = holder[holder.Length - 1].transform.position + new Vector3(0, up, 0);
+                holder[holder.Length - 1].GetComponent<Holder>().contained = true;
                 //transform.position = Vector3.MoveTowards(rb.position, holder[0].transform.position + new Vector3(0, up, 0), movSpeed);
 
             }
@@ -106,41 +110,41 @@ public class Piece : MonoBehaviour
                 BackToStart();
             }
         }
-        else if (holder.Length > 1)
-        {
-            float closestDistance = Mathf.Infinity;
+        //else if (holder.Length > 1)
+        //{
+        //    float closestDistance = Mathf.Infinity;
             
-            for (int i=0; i<holder.Length; i++)
-            {
-                if (CheckHolder(holder[i]))
-                {
-                    if (closestDistance > Vector3.Distance(holder[i].transform.position, transform.position))
-                    {
-                        closestDistance = Vector3.Distance(holder[i].transform.position, transform.position);
-                        closestHolder = holder[i].transform.position;
-                    }
-                }
-            }
-            if (closestHolder != null)
-            {
-                chase = true;
-                stray = false;
-                movingPosition = closestHolder + new Vector3(0, up, 0);
-                holder[0].GetComponent<Holder>().contained = true;
-            }
-            else
-            {
-                BackToStart();
-            }
+        //    for (int i=0; i<holder.Length; i++)
+        //    {
+        //        if (CheckHolder(holder[i]))
+        //        {
+        //            if (closestDistance > Vector3.Distance(holder[i].transform.position, transform.position))
+        //            {
+        //                closestDistance = Vector3.Distance(holder[i].transform.position, transform.position);
+        //                closestHolder = holder[i].transform.position;
+        //            }
+        //        }
+        //    }
+        //    if (closestHolder != null)
+        //    {
+        //        chase = true;
+        //        stray = false;
+        //        movingPosition = closestHolder + new Vector3(0, up, 0);
+        //        holder[0].GetComponent<Holder>().contained = true;
+        //    }
+        //    else
+        //    {
+        //        BackToStart();
+        //    }
             
             //transform.position = Vector3.MoveTowards(rb.position, closestHolder + new Vector3(0, up, 0), movSpeed);
-        }
-        else
-        {
-            BackToStart();
-            //transform.position = Vector3.MoveTowards(rb.position, startPosition, movSpeed);
+        //}
+        //else
+        //{
+        //    BackToStart();
+        //    //transform.position = Vector3.MoveTowards(rb.position, startPosition, movSpeed);
             
-        }
+        //}
     }
 
     public void MoveToward(Vector3 target)
@@ -160,7 +164,6 @@ public class Piece : MonoBehaviour
 
     public void Highlight()
     {
-        Debug.Log("light");
         (mesh.materials[0], mesh.materials[2]) = (mesh.materials[2], mesh.materials[0]);
     }
 }
