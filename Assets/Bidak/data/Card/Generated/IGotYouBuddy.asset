@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea041d47182a524496c727b1edf4107, type: 3}
+  m_Name: IGotYouBuddy
+  m_EditorClassIdentifier: 
+  cardName: i got you buddy
+  cardImage: {fileID: 0}
+  points: 0
+  cardPrefab: {fileID: 8214269719451704630, guid: 089c4b2db2209b64ea15122b26dd98d7, type: 3}
+  type: 0
+  rank: 0
+  pieceType: 5
+  cardMaterial: {fileID: 2100000, guid: 433b9a04fbebe1a4a837f7f3a73e2317, type: 2}
+  description: Setelah raja berpindah, semua pion di sekitarnya jadi kebal dari serangan
+    selama giliran lawan berikutnya. Efek bertahan 1 giliran.
+  cardEffects:
+  - effectType: 25
+    isEnabled: 1
+    parameters:
+      moveCount: 1
+      turnDuration: 1
+      stepsForward: 1
+      stepsBackward: 1
+      turnsCooldown: 0
+      canAttackDiagonally: 0
+      canAttackStraight: 0
+      attackRange: 1
+      ignoreBlocking: 0
+      hasLightProtection: 1
+      hasFullProtection: 0
+      protectionDuration: 1
+      canPromoteInPlace: 0
+      canRevive: 0
+      canMoveBackward: 0
+      canMoveSideways: 0
+      requiresNoAttack: 0
+      canSwapPositions: 0
+      isBlockaded: 0
+      turnsWithoutMoving: 0
+      affectsMultiplePieces: 1
+      affectsAlliedPieces: 1
+      affectsEnemyPieces: 0
+      maxTargets: 1
+    effectDescription: 

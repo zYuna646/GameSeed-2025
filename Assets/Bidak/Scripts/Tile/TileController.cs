@@ -142,7 +142,7 @@ public class TileController : MonoBehaviour
 
             // Add "Piece" tag to the spawned piece
             currentPieceObject.tag = "Piece";
-
+            
             // Get or add PieceController
             currentPieceController = currentPieceObject.GetComponent<PieceController>();
             if (currentPieceController == null)

@@ -169,17 +169,20 @@ namespace Bidak.Manager
                 cardHeaderRenderer.material = cardMaterial;
 
                 // Add hover effect and event trigger
-                AddHoverEffectAndEventTrigger(cardInstance);
+                AddHoverEffectAndEventTrigger(cardInstance, cardData, playerIndex);
             }
         }
 
-        private void AddHoverEffectAndEventTrigger(GameObject cardObject)
+        private void AddHoverEffectAndEventTrigger(GameObject cardObject, ChessCardData cardData, int playerIndex)
         {
             // Debug logging
             Debug.Log($"Setting up hover effect for {cardObject.name}");
 
             // Add hover effect script
             ChessCardHoverEffect hoverEffect = cardObject.AddComponent<ChessCardHoverEffect>();
+            
+            // Set card data and player index
+            hoverEffect.SetCardData(cardData, playerIndex);
 
             // Ensure collider exists
             Collider collider = cardObject.GetComponent<Collider>();
@@ -234,6 +237,18 @@ namespace Bidak.Manager
                 hoverEffect.OnPointerExit(pointerData); 
             });
             eventTrigger.triggers.Add(exitEvent);
+
+            // Pointer Click event
+            EventTrigger.Entry clickEvent = new EventTrigger.Entry
+            {
+                eventID = EventTriggerType.PointerClick
+            };
+            clickEvent.callback.AddListener((data) => { 
+                PointerEventData pointerData = data as PointerEventData;
+                Debug.Log($"Pointer Click triggered on {cardObject.name} by {pointerData?.pointerCurrentRaycast.gameObject?.name}");
+                hoverEffect.OnPointerClick(pointerData); 
+            });
+            eventTrigger.triggers.Add(clickEvent);
 
             // Ensure the card is set as a layer that can be raycasted
             cardObject.layer = LayerMask.NameToLayer("UI");

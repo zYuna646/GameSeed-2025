@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea041d47182a524496c727b1edf4107, type: 3}
+  m_Name: StoneToTheGold
+  m_EditorClassIdentifier: 
+  cardName: stone to the Gold
+  cardImage: {fileID: 0}
+  points: 0
+  cardPrefab: {fileID: 4946194189688133527, guid: 3754894b491490b46bde02b29fc361eb, type: 3}
+  type: 0
+  rank: 1
+  pieceType: 0
+  cardMaterial: {fileID: 0}
+  description: Setelah tidak bergerak selama 15 giliran, Pion akan melakukan promosi
+    di tempat dan menjadi bidak apapun (kuda/gajah/benteng). Efek hilang jika pion
+    bergerak sebelum giliran ke-15.
+  cardEffects:
+  - effectType: 22
+    isEnabled: 1
+    parameters:
+      moveCount: 1
+      turnDuration: 15
+      stepsForward: 1
+      stepsBackward: 1
+      turnsCooldown: 0
+      canAttackDiagonally: 0
+      canAttackStraight: 0
+      attackRange: 1
+      ignoreBlocking: 0
+      hasLightProtection: 0
+      hasFullProtection: 0
+      protectionDuration: 1
+      canPromoteInPlace: 1
+      canRevive: 0
+      canMoveBackward: 0
+      canMoveSideways: 0
+      requiresNoAttack: 0
+      canSwapPositions: 0
+      isBlockaded: 0
+      turnsWithoutMoving: 15
+      affectsMultiplePieces: 0
+      affectsAlliedPieces: 0
+      affectsEnemyPieces: 0
+      maxTargets: 1
+    effectDescription: 

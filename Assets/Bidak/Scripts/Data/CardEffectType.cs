@@ -35,7 +35,11 @@ namespace Bidak.Data
         DanceLikeQueen,             // Setelah Gajah memakan bidak, langkah berikutnya bisa dilakukan dalam arah lurus dalam satu langkah seperti bidak ratu
         BackFromDead,               // Setelah bidak dimakan dan musuh yang memakan bidak sudah pergi, maka bidak yang telah dimakan dapat dihidupkan kembali
         StoneTomorrow,              // Setelah tidak bergerak selama 15 giliran, Pion akan melakukan promosi di tempat dan menjadi bidak apapun
-        SpecialMove                 // Bidak apa pun dapat bergerak satu langkah ke samping (kiri atau kanan), terlepas dari pola gerak normalnya
+        SpecialMove,                // Bidak apa pun dapat bergerak satu langkah ke samping (kiri atau kanan), terlepas dari pola gerak normalnya
+        
+        // Additional Excel Effects
+        DanceLikeElephant,          // Setelah Gajah memakan bidak, langkah berikutnya bisa dilakukan dalam arah lurus seperti bidak ratu
+        IGotYou                     // Setelah raja berpindah, semua pion di sekitarnya jadi kebal dari serangan selama giliran lawan berikutnya
     }
 
     /// <summary>
@@ -68,6 +72,9 @@ namespace Bidak.Data
         public bool canMoveBackward = false;        // Can move backward
         public bool canMoveSideways = false;        // Can move sideways
         public bool requiresNoAttack = false;       // Effect only works if no attack was made
+        public bool canSwapPositions = false;       // Can swap positions with attacking piece
+        public bool isBlockaded = false;            // Creates a blockade
+        public int turnsWithoutMoving = 0;          // Required turns without moving for effect
         
         [Header("Target Parameters")]
         public bool affectsMultiplePieces = false;  // Affects multiple pieces
