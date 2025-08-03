@@ -2688,6 +2688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58910889465ddd3438c64cd995e54c0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pieceController: {fileID: 0}
   spaceColission: 0
   spaceRow: 0
   piece: {fileID: 0}
