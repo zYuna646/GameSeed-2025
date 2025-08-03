@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Tilemaps;
 
 public class TileController : MonoBehaviour
 {
@@ -49,7 +50,7 @@ public class TileController : MonoBehaviour
         horizontalSpread = hSpread;
         verticalSpread = vSpread;
     }
-
+    
     private void CheckAndUpdatePiece()
     {
         // Skip if no tile data

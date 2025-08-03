@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea041d47182a524496c727b1edf4107, type: 3}
+  m_Name: temporary friend
+  m_EditorClassIdentifier: 
+  cardName: temporary friend
+  cardImage: {fileID: 21300000, guid: c81c833d8c0c57b439971a3ae304b524, type: 3}
+  points: 2
+  cardPrefab: {fileID: 8214269719451704630, guid: 089c4b2db2209b64ea15122b26dd98d7, type: 3}
+  type: 1
+  rank: 0
+  pieceType: 1
+  cardMaterial: {fileID: 2100000, guid: a23a075279f398d439ad312a60e64d6f, type: 2}
+  description: "Benteng menciptakan \u201Cblokade\u201D di satu garis lurus di depannya
+    (maksimal 3 petak) yang tidak bisa dilalui lawan selama satu giliran."
