@@ -8,6 +8,7 @@ public enum type
 }
 public class PieceType : MonoBehaviour
 {
+    public PieceController pieceController;
     [SerializeField] public float spaceColission;
     [SerializeField] public float spaceRow;
     public Piece piece;
@@ -25,10 +26,10 @@ public class PieceType : MonoBehaviour
     public bool isWhite;
     
     //rook indicator
-    bool hasMove = false;
+    public bool hasMove = false;
 
     //king indicator
-    bool hasCastled = false;
+    public bool hasCastled = false;
 
 
     [SerializeField] public type typePiece;
@@ -42,7 +43,9 @@ public class PieceType : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        this.transform.SetParent(parent.transform);
+        pieceController = GetComponent<PieceController>();
+        
+        parent = this.transform.parent.gameObject;
         this.transform.position = parent.transform.position + new Vector3(0, 1.33f,0);
         piece = GetComponent<Piece>();
         tileManager = FindObjectOfType<TileManager>();
@@ -50,12 +53,17 @@ public class PieceType : MonoBehaviour
     }
     void Start()
     {
-        
+        //hasDoubleMoved = pieceController.pieceData.isFirstMove;
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(pieceController.pieceData);
+        if (pieceController.pieceData)
+        {
+            hasMove = pieceController.pieceData.isFirstMove;
+        }
         origin = transform.position - new Vector3(0,0.62f, 0);
         //    switch (typePiece)
         //    {
@@ -77,16 +85,10 @@ public class PieceType : MonoBehaviour
     }
     public void RayCheck()
     {
-        Debug.Log("RayCheck");
-        
-        int rayNum = 0;
         
 
         if(typePiece == type.PAWN)
         {
-            Debug.Log("PAWN");
-            rayNum = 3;
-            
             PawnMove();
             ray1 = Physics.OverlapCapsule(origin, origin + a, 0.1f, tileMask);
             ray2 = Physics.OverlapCapsule(origin, origin + b, 0.1f, tileMask);

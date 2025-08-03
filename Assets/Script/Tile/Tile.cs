@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,11 +6,16 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    private TileManager tileManager;
+    public Color originColor;
+    public Color highlightColor;
+    public MeshRenderer MeshRenderer;
+    public TileManager tileManager;
+    private TileController tileController;
     public bool inSight = false;
     public bool hover = false;
     public bool rised = false;
     public bool contained = false;
+    public bool canHover = true;
     public float normalHeight;
     public Vector3 normalScale;
     [SerializeField] LayerMask test;
@@ -21,23 +27,62 @@ public class Tile : MonoBehaviour
     void Start()
     {
         tileManager = FindObjectOfType<TileManager>();
+        MeshRenderer = GetTileSelectRenderer();
+        tileController = GetComponent<TileController>();
+        originColor = MeshRenderer.material.color;
+        
         normalHeight = transform.position.y;
         normalScale = transform.localScale;
+        
+        row = tileController.tileData.row + 1;
+        collumn = tileController.tileData.column + 1;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (inSight)
+        if (!tileManager.isPicked)
         {
-            CheckInArray();
+            if (inSight)
+            {
+                CheckInArray();
+            }
+            if (!hover && rised && tileManager.pieceColliders.Length == 0)
+            {
+                tileManager.ScaleDown(this.transform, normalHeight, normalScale);
+                MeshRenderer.material.color = originColor;
+            }
+        }else if(tileManager.isPicked)
+        {
+            if (!tileManager.isPicked)
+            {
+                tileManager.ScaleDown(this.transform, normalHeight, normalScale);
+                MeshRenderer.material.color = originColor;
+            }
         }
-        if(!hover &&  rised && tileManager.pieceColliders.Length == 0)
+        if(rised && hover && tileManager.tileColliders.Length == 0 && !tileManager.isPicked)
         {
             tileManager.ScaleDown(this.transform, normalHeight, normalScale);
+            MeshRenderer.material.color = originColor;
         }
+        
         CheckContain();
     }
+    MeshRenderer GetTileSelectRenderer()
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.CompareTag("TileSelect"))
+            {
+                MeshRenderer renderer = child.GetComponent<MeshRenderer>();
+                if (renderer != null)
+                    return renderer;
+            }
+        }
+        return null;
+    }
+
     void CheckInArray()
     {
         if (tileManager.tileColliders != null)
@@ -54,6 +99,7 @@ public class Tile : MonoBehaviour
                     if (rised)
                     {
                         tileManager.ScaleDown(this.transform, normalHeight, normalScale);
+                        MeshRenderer.material.color = originColor;
                         inSight = false;
                     }
                 }
@@ -65,6 +111,7 @@ public class Tile : MonoBehaviour
             if (rised)
             {
                 tileManager.ScaleDown(this.transform, normalHeight, normalScale);
+                MeshRenderer.material.color = originColor;
                 inSight = false;
             }
         }

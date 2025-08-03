@@ -12,6 +12,7 @@ TagManager:
   - PieceBody
   - SlashEffect
   - HitEffect
+  - TileSelect
   - Player1Camera
   - CardHeader
   - Player2Camera

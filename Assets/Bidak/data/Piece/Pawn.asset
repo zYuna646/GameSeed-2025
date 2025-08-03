@@ -30,7 +30,7 @@ MonoBehaviour:
   points: 1
   canCastle: 0
   canEnPassant: 0
-  isFirstMove: 1
+  isFirstMove: 0
   isDead: 0
   idleAnimation: {fileID: 7400000, guid: ed5efca8bebba864d9f5d5b20196c94b, type: 3}
   idleAnimationSpeed: 1
@@ -105,14 +105,11 @@ MonoBehaviour:
   capturingEffectColor: {r: 1, g: 0.6951792, b: 0, a: 1}
   capturingEffectDuration: 0.5
   capturingEffectIntensity: 1
-  capturingEffectScale: {x: 0.5, y: 0.5, z: 0.5}
   capturedEffectPrefab: {fileID: 5435998012328932994, guid: d8703a33a4eb0b84a875202fde23e8f7, type: 3}
   capturedEffectColor: {r: 1, g: 0.49132895, b: 0, a: 1}
   capturedEffectDuration: 0.5
   capturedEffectIntensity: 1
-  capturedEffectScale: {x: 0.5, y: 0.5, z: 0.5}
   deathEffectPrefab: {fileID: 6126188424833946103, guid: a58aa9a78f2b45b45bb0f3e2e1e3ad3c, type: 3}
   deathEffectColor: {r: 1, g: 0.49411765, b: 0, a: 1}
   deathEffectDuration: 1
   deathEffectIntensity: 1
-  deathEffectScale: {x: 0.75, y: 0.75, z: 0.75}

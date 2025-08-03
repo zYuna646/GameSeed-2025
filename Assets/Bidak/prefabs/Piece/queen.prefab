@@ -7580,7 +7580,9 @@ GameObject:
   - component: {fileID: 9500424}
   - component: {fileID: 384174483463119477}
   - component: {fileID: 2509786659799321711}
-  m_Layer: 0
+  - component: {fileID: 5036036045534458353}
+  - component: {fileID: 5502095463925389547}
+  m_Layer: 6
   m_Name: queen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7698,12 +7700,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pieceData: {fileID: 0}
-  currentTile: {fileID: 0}
-  isMoving: 0
-  moveSpeed: 5
+  selectedMaterialIndex: 0
+  playerType: {r: 1, g: 1, b: 1, a: 1}
+  movementController: {fileID: 0}
+  animationController: {fileID: 0}
+  effectController: {fileID: 0}
+  soundsController: {fileID: 0}
+  pieceBodyObject: {fileID: 0}
   isSelected: 0
   isCaptured: 0
-  animationController: {fileID: 0}
 --- !u!114 &2509786659799321711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7722,6 +7727,7 @@ MonoBehaviour:
   pieceController: {fileID: 0}
   isAnimating: 0
   isMoving: 0
+  isIdle: 1
   spawnCurve:
     serializedVersion: 2
     m_Curve:
@@ -7843,6 +7849,61 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   animationSpeed: 1
+--- !u!114 &5036036045534458353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58910889465ddd3438c64cd995e54c0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spaceColission: 0
+  spaceRow: 0
+  piece: {fileID: 0}
+  tileMask:
+    serializedVersion: 2
+    m_Bits: 512
+  ray1: []
+  ray2: []
+  ray3: []
+  ray4: []
+  hasDoubleMoved: 0
+  isWhite: 0
+  hasMove: 0
+  hasCastled: 0
+  typePiece: 4
+  parent: {fileID: 0}
+  a: {x: 0, y: 0, z: 0}
+  b: {x: 0, y: 0, z: 0}
+  c: {x: 0, y: 0, z: 0}
+  origin: {x: 0, y: 0, z: 0}
+--- !u!136 &5502095463925389547
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145554}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.68, z: 0}
 --- !u!1 &146358
 GameObject:
   m_ObjectHideFlags: 0
