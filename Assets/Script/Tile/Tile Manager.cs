@@ -8,6 +8,7 @@ using UnityEngine.WSA;
 public class TileManager : MonoBehaviour
 {
     private GameManager gameManager;
+    private CameraSwitch cameraSwitch;
     private ChessBoardTileSpawner chessBoardTileSpawner;
     [SerializeField]private TileController goTo;
     public GameObject kiri;
@@ -31,6 +32,7 @@ public class TileManager : MonoBehaviour
     [SerializeField] Transform test;
     void Start()
     {
+        cameraSwitch = FindObjectOfType<CameraSwitch>();
         gameManager = FindObjectOfType<GameManager>();
         chessBoardTileSpawner = FindObjectOfType<ChessBoardTileSpawner>();
     }
@@ -46,7 +48,7 @@ public class TileManager : MonoBehaviour
             tiles.Sort((a, b) => a.name.CompareTo(b.name));
         }
         mousePos = Input.mousePosition;
-        transform.position = Camera.main.ScreenToWorldPoint(mousePos);
+        if (cameraSwitch != null) { transform.position = cameraSwitch.currentCamera.ScreenToWorldPoint(mousePos); }
         mousePos.z = cameraOffset;
 
         if (Input.GetKeyDown(KeyCode.S))
@@ -105,7 +107,7 @@ public class TileManager : MonoBehaviour
     }
     void Hover()
     {
-        cameraPoint = Camera.main.ScreenToWorldPoint(mousePos);
+        cameraPoint = cameraSwitch.currentCamera.ScreenToWorldPoint(mousePos);
         tileColliders = Physics.OverlapCapsule(transform.position, cameraPoint, 0.1f, tileMask);
         pieceColliders = Physics.OverlapCapsule(transform.position, cameraPoint, 0.1f, pieceMask);
         if (!isPicked)
