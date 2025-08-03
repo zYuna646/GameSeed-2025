@@ -32,6 +32,7 @@ MonoBehaviour:
   canEnPassant: 0
   isFirstMove: 0
   isDead: 0
+  isWhite: 1
   idleAnimation: {fileID: 7400000, guid: ed5efca8bebba864d9f5d5b20196c94b, type: 3}
   idleAnimationSpeed: 1
   idleAnimationCurve:
@@ -101,16 +102,16 @@ MonoBehaviour:
   spawnSoundDelay: 1
   deathSoundEffect: {fileID: 0}
   deathSoundVolume: 1
-  capturingEffectPrefab: {fileID: 0}
-  capturingEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturingEffectPrefab: {fileID: 3153472991145048103, guid: 3407e378c048bb5438424b28c7740b48, type: 3}
+  capturingEffectColor: {r: 1, g: 0.69411767, b: 0, a: 1}
   capturingEffectDuration: 0.5
   capturingEffectIntensity: 1
-  capturedEffectPrefab: {fileID: 0}
-  capturedEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturedEffectPrefab: {fileID: 5435998012328932994, guid: d8703a33a4eb0b84a875202fde23e8f7, type: 3}
+  capturedEffectColor: {r: 1, g: 0.49019608, b: 0, a: 1}
   capturedEffectDuration: 0.5
   capturedEffectIntensity: 1
-  deathEffectPrefab: {fileID: 0}
-  deathEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  deathEffectPrefab: {fileID: 6126188424833946103, guid: a58aa9a78f2b45b45bb0f3e2e1e3ad3c, type: 3}
+  deathEffectColor: {r: 1, g: 0.49411765, b: 0, a: 1}
   deathEffectDuration: 1
   deathEffectIntensity: 1
   appliedEffects: []

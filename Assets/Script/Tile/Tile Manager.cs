@@ -223,7 +223,17 @@ public class TileManager : MonoBehaviour
 
             if (isValidMove && !isBlocked)
             {
-                ScaleUp(tiles[i].transform);
+                if (tiles[i].gameObject.GetComponentInChildren<PieceType>() != null)
+                {
+                    if (tiles[i].gameObject.GetComponentInChildren<PieceType>().isWhite != currentTile.gameObject.GetComponentInChildren<PieceType>().isWhite)
+                    {
+                        ScaleUp(tiles[i].transform);
+                    }
+                }
+                else
+                {
+                    ScaleUp(tiles[i].transform);
+                }
             }
         }
     }

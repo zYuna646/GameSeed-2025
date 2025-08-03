@@ -32,6 +32,7 @@ MonoBehaviour:
   canEnPassant: 0
   isFirstMove: 1
   isDead: 0
+  isWhite: 1
   idleAnimation: {fileID: 7400000, guid: 0081a5284a5a72a41a401b6554a39301, type: 3}
   idleAnimationSpeed: 1
   idleAnimationCurve:
@@ -82,35 +83,35 @@ MonoBehaviour:
     m_RotationOrder: 4
   castleAnimation: {fileID: 0}
   enPassantAnimation: {fileID: 0}
-  spawnEffectPrefab: {fileID: 0}
-  spawnEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  spawnEffectPrefab: {fileID: 7761031033666763820, guid: 1eb833340b41fb444b576c4dced8d4dc, type: 3}
+  spawnEffectColor: {r: 0.87058824, g: 0.6862745, b: 0.24313726, a: 1}
   spawnEffectDuration: 1
   spawnEffectIntensity: 1
-  moveEffectPrefab: {fileID: 0}
-  moveEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  moveEffectPrefab: {fileID: 8230022441722461589, guid: 41494896fc96c9748b81d3356632794e, type: 3}
+  moveEffectColor: {r: 0.8117647, g: 0.5294118, b: 0.19607843, a: 1}
   moveEffectDuration: 0.5
   moveEffectIntensity: 1
   loopMoveEffect: 1
-  moveEffectScale: {x: 0.5, y: 0.5, z: 0.5}
-  moveSoundEffect: {fileID: 0}
+  moveEffectScale: {x: 0.2, y: 0.2, z: 0.2}
+  moveSoundEffect: {fileID: 8300000, guid: df7087e4d8a8bb546bc08ce68632903f, type: 3}
   moveSoundVolume: 1
   captureSoundEffect: {fileID: 0}
   captureSoundVolume: 1
-  spawnSoundEffect: {fileID: 0}
+  spawnSoundEffect: {fileID: 8300000, guid: 5c7b6d4002009e842bd2621585546d19, type: 3}
   spawnSoundVolume: 1
-  spawnSoundDelay: 0
+  spawnSoundDelay: 1
   deathSoundEffect: {fileID: 0}
   deathSoundVolume: 1
-  capturingEffectPrefab: {fileID: 0}
-  capturingEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturingEffectPrefab: {fileID: 3153472991145048103, guid: 3407e378c048bb5438424b28c7740b48, type: 3}
+  capturingEffectColor: {r: 1, g: 0.69411767, b: 0, a: 1}
   capturingEffectDuration: 0.5
   capturingEffectIntensity: 1
-  capturedEffectPrefab: {fileID: 0}
-  capturedEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturedEffectPrefab: {fileID: 5435998012328932994, guid: d8703a33a4eb0b84a875202fde23e8f7, type: 3}
+  capturedEffectColor: {r: 1, g: 0.49019608, b: 0, a: 1}
   capturedEffectDuration: 0.5
   capturedEffectIntensity: 1
-  deathEffectPrefab: {fileID: 0}
-  deathEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  deathEffectPrefab: {fileID: 6126188424833946103, guid: a58aa9a78f2b45b45bb0f3e2e1e3ad3c, type: 3}
+  deathEffectColor: {r: 1, g: 0.49411765, b: 0, a: 1}
   deathEffectDuration: 1
   deathEffectIntensity: 1
   appliedEffects: []
