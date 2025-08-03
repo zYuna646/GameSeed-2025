@@ -2203,7 +2203,9 @@ GameObject:
   - component: {fileID: 6317547567373799270}
   - component: {fileID: 1781266163218346027}
   - component: {fileID: 4818272643382591251}
-  m_Layer: 0
+  - component: {fileID: 5971642416573976636}
+  - component: {fileID: 8908205252250586157}
+  m_Layer: 6
   m_Name: pawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2480,6 +2482,7 @@ MonoBehaviour:
   moveEffectFadeInTime: 0.3
   moveEffectFadeOutTime: 0.3
   currentCapturingEffect: {fileID: 0}
+  isCapturingEffectPlaying: 0
   capturingEffectFadeInTime: 0.3
   capturingEffectFadeOutTime: 0.3
   capturingEffectScaleCurve:
@@ -2531,6 +2534,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   currentCapturedEffect: {fileID: 0}
+  isCapturedEffectPlaying: 0
   capturedEffectFadeInTime: 0.3
   capturedEffectFadeOutTime: 0.3
   capturedEffectScaleCurve:
@@ -2582,6 +2586,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   currentDeathEffect: {fileID: 0}
+  isDeathEffectPlaying: 0
   deathEffectFadeInTime: 0.5
   deathEffectFadeOutTime: 0.5
   deathEffectScaleCurve:
@@ -2671,6 +2676,61 @@ MonoBehaviour:
   preCapturePauseDistance: 2
   rotationInteractionSpeed: 2
   interactionPauseDuration: 2
+--- !u!114 &5971642416573976636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58910889465ddd3438c64cd995e54c0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spaceColission: 0
+  spaceRow: 0
+  piece: {fileID: 0}
+  tileMask:
+    serializedVersion: 2
+    m_Bits: 512
+  ray1: []
+  ray2: []
+  ray3: []
+  ray4: []
+  hasDoubleMoved: 0
+  isWhite: 0
+  hasMove: 0
+  hasCastled: 0
+  typePiece: 0
+  parent: {fileID: 0}
+  a: {x: 0, y: 0, z: 0}
+  b: {x: 0, y: 0, z: 0}
+  c: {x: 0, y: 0, z: 0}
+  origin: {x: 0, y: 0, z: 0}
+--- !u!136 &8908205252250586157
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111318}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.68, z: 0}
 --- !u!1 &111836
 GameObject:
   m_ObjectHideFlags: 0

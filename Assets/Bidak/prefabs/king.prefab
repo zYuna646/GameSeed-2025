@@ -12651,7 +12651,9 @@ GameObject:
   - component: {fileID: -3533996993272327646}
   - component: {fileID: 7440042258994533029}
   - component: {fileID: 5845592089857994121}
-  m_Layer: 0
+  - component: {fileID: 6503588901083865130}
+  - component: {fileID: 4201733708251702450}
+  m_Layer: 6
   m_Name: king
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12709,17 +12711,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pieceData: {fileID: 0}
-  currentTile: {fileID: 0}
-  destinationTile: {fileID: 0}
-  isMoving: 0
-  moveSpeed: 0.09
-  rotationSpeed: 1
-  isSelected: 0
-  isCaptured: 0
+  selectedMaterialIndex: 0
+  playerType: {r: 1, g: 1, b: 1, a: 1}
+  movementController: {fileID: 0}
   animationController: {fileID: 0}
   effectController: {fileID: 0}
+  soundsController: {fileID: 0}
   pieceBodyObject: {fileID: 0}
-  movementThreshold: 0.01
+  isSelected: 0
+  isCaptured: 0
 --- !u!114 &-3533996993272327646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12738,6 +12738,7 @@ MonoBehaviour:
   pieceController: {fileID: 0}
   isAnimating: 0
   isMoving: 0
+  isIdle: 1
   spawnCurve:
     serializedVersion: 2
     m_Curve:
@@ -12926,6 +12927,162 @@ MonoBehaviour:
   currentMoveEffect: {fileID: 0}
   moveEffectFadeInTime: 0.3
   moveEffectFadeOutTime: 0.3
+  currentCapturingEffect: {fileID: 0}
+  isCapturingEffectPlaying: 0
+  capturingEffectFadeInTime: 0.3
+  capturingEffectFadeOutTime: 0.3
+  capturingEffectScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  capturingEffectFadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  currentCapturedEffect: {fileID: 0}
+  isCapturedEffectPlaying: 0
+  capturedEffectFadeInTime: 0.3
+  capturedEffectFadeOutTime: 0.3
+  capturedEffectScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  capturedEffectFadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  currentDeathEffect: {fileID: 0}
+  isDeathEffectPlaying: 0
+  deathEffectFadeInTime: 0.5
+  deathEffectFadeOutTime: 0.5
+  deathEffectScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  deathEffectFadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &5845592089857994121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12941,6 +13098,61 @@ MonoBehaviour:
   freezeVerticalPosition: 1
   useKinematicMode: 1
   colliderType: 0
+--- !u!114 &6503588901083865130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58910889465ddd3438c64cd995e54c0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spaceColission: 0
+  spaceRow: 0
+  piece: {fileID: 0}
+  tileMask:
+    serializedVersion: 2
+    m_Bits: 512
+  ray1: []
+  ray2: []
+  ray3: []
+  ray4: []
+  hasDoubleMoved: 0
+  isWhite: 0
+  hasMove: 0
+  hasCastled: 0
+  typePiece: 5
+  parent: {fileID: 0}
+  a: {x: 0, y: 0, z: 0}
+  b: {x: 0, y: 0, z: 0}
+  c: {x: 0, y: 0, z: 0}
+  origin: {x: 0, y: 0, z: 0}
+--- !u!136 &4201733708251702450
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169662}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.68, z: 0}
 --- !u!1 &170510
 GameObject:
   m_ObjectHideFlags: 0

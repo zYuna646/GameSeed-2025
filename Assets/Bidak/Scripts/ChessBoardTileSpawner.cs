@@ -5,6 +5,7 @@ using System.Linq;
 
 public class ChessBoardTileSpawner : MonoBehaviour
 {
+    public GameObject tileManager;
     [Header("Board Configuration")]
     public int boardSize = 8;
     
@@ -50,7 +51,7 @@ public class ChessBoardTileSpawner : MonoBehaviour
             {
                 // Determine tile color
                 bool isWhiteTile = (x + y) % 2 == 0;
-                BoardTileData tileData = isWhiteTile ? whiteTileData : blackTileData;
+                BoardTileData tileData = isWhiteTile ? Instantiate(whiteTileData) : Instantiate(blackTileData);
 
                 // Calculate tile position
                 Vector3 tilePosition = CalculateTilePosition(x, y, boardCenter);
@@ -109,6 +110,7 @@ public class ChessBoardTileSpawner : MonoBehaviour
                 }
             }
         }
+        tileManager.SetActive(true);
     }
 
     private Vector3 CalculateTilePosition(int x, int y, Vector3 boardCenter)

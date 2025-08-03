@@ -12,6 +12,7 @@ TagManager:
   - PieceBody
   - SlashEffect
   - HitEffect
+  - TileSelect
   layers:
   - Default
   - TransparentFX
