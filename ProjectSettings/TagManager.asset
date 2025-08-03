@@ -17,6 +17,7 @@ TagManager:
   - CardHeader
   - Player2Camera
   - PlayerCard
+  - NetworkManager
   layers:
   - Default
   - TransparentFX
