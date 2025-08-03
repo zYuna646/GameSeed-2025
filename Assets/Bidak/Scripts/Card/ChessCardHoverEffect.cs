@@ -16,6 +16,12 @@ namespace Bidak.Manager
         [SerializeField] private Color hoverColor = new Color(1.2f, 1.2f, 1.2f, 1f);
         [SerializeField] private Color selectedColor = new Color(0.8f, 1.5f, 0.8f, 1f);
         [SerializeField] private Color activatedColor = new Color(1.5f, 0.8f, 0.8f, 1f);
+        
+        [Header("Audio Effects")]
+        [SerializeField] private AudioClip hoverSound;
+        [SerializeField] private AudioClip selectSound;
+        [SerializeField] private AudioClip activateSound;
+        [SerializeField][Range(0f, 1f)] private float soundVolume = 0.5f;
 
         [Header("Card Data")]
         public ChessCardData cardData;
@@ -73,10 +79,49 @@ namespace Bidak.Manager
             cameraSwitch = FindObjectOfType<CameraSwitch>();
             targetingSystem = FindObjectOfType<CardTargetingSystem>();
 
+            // Validate and fix interaction setup
+            ValidateInteractionSetup();
+
             // Debug logging
             Debug.Log($"ChessCardHoverEffect initialized on {gameObject.name}");
             Debug.Log($"Original Scale: {originalScale}, Original Rotation: {originalRotation}");
             Debug.Log($"Renderers found: {renderers?.Length ?? 0}");
+        }
+        
+        /// <summary>
+        /// Validate and fix card interaction setup
+        /// </summary>
+        private void ValidateInteractionSetup()
+        {
+            bool hasIssues = false;
+            
+            // Check collider
+            Collider col = GetComponent<Collider>();
+            if (col == null || !col.enabled)
+            {
+                Debug.LogWarning($"Card {gameObject.name} missing or disabled collider - fixing...");
+                hasIssues = true;
+            }
+            
+            // Check if renderers exist
+            if (renderers == null || renderers.Length == 0)
+            {
+                Debug.LogWarning($"Card {gameObject.name} has no renderers - interaction may not work");
+                hasIssues = true;
+            }
+            
+            // Check if card data is assigned
+            if (cardData == null)
+            {
+                Debug.LogWarning($"Card {gameObject.name} has no card data assigned");
+                hasIssues = true;
+            }
+            
+            // Re-ensure event trigger if issues found
+            if (hasIssues)
+            {
+                EnsureEventTrigger();
+            }
         }
 
         private void OnDestroy()
@@ -101,8 +146,41 @@ namespace Bidak.Manager
             if (collider == null)
             {
                 BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
-                boxCollider.size = GetRendererBounds().size;
+                Bounds bounds = GetRendererBounds();
+                
+                // Ensure minimum size for reliable interaction
+                Vector3 size = bounds.size;
+                size.x = Mathf.Max(size.x, 0.1f);
+                size.y = Mathf.Max(size.y, 0.1f);
+                size.z = Mathf.Max(size.z, 0.1f);
+                
+                boxCollider.size = size;
+                boxCollider.center = Vector3.zero;
                 Debug.Log($"Added BoxCollider to {gameObject.name} with size {boxCollider.size}");
+            }
+            else
+            {
+                // Ensure existing collider is enabled and properly sized
+                collider.enabled = true;
+                if (collider is BoxCollider box && box.size == Vector3.zero)
+                {
+                    Bounds bounds = GetRendererBounds();
+                    Vector3 size = bounds.size;
+                    size.x = Mathf.Max(size.x, 0.1f);
+                    size.y = Mathf.Max(size.y, 0.1f);
+                    size.z = Mathf.Max(size.z, 0.1f);
+                    box.size = size;
+                }
+            }
+
+            // Ensure the object is on the correct layer for raycasting
+            if (gameObject.layer == 0) // Default layer
+            {
+                gameObject.layer = LayerMask.NameToLayer("UI");
+                if (gameObject.layer == -1) // If UI layer doesn't exist, use default
+                {
+                    gameObject.layer = 0;
+                }
             }
 
             // Add Physics Raycaster to all cameras
@@ -153,19 +231,34 @@ namespace Bidak.Manager
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            Debug.Log($"Pointer entered {gameObject.name}");
+            Debug.Log($"Pointer entered {gameObject.name} - isActivated: {isActivated}, canBeActivated: {canBeActivated}");
 
             // Skip hover if card is already activated
             if (isActivated || !canBeActivated)
+            {
+                Debug.Log($"Skipping hover - card state: activated={isActivated}, canBeActivated={canBeActivated}");
                 return;
+            }
+
+            // Check if this card belongs to the current player
+            if (!IsCurrentPlayersTurn())
+            {
+                Debug.Log($"Skipping hover - not current player's turn. Card belongs to player {playerIndex}, current player is {GameManagerChess.Instance?.currentPlayerIndex + 1}");
+                return;
+            }
 
             // Determine which camera is being used
-            Camera currentCamera = eventData.pressEventCamera ?? Camera.main;
+            Camera currentCamera = GetCurrentActiveCamera(eventData);
             Debug.Log($"Current Camera: {currentCamera?.name ?? "None"}");
 
-            // Only apply hover effect if the card is in the current camera's view
-            if (IsCardInCurrentCamera(currentCamera))
+            // More permissive camera check - allow hover if camera exists and card is accessible
+            if (currentCamera != null && IsCardAccessibleFromCamera(currentCamera))
             {
+                Debug.Log($"Applying hover effect for {gameObject.name}");
+                
+                // Play hover sound
+                PlaySound(hoverSound, currentCamera);
+                
                 // Scale up
                 StartCoroutine(ScaleCard(originalScale * hoverScaleMultiplier));
 
@@ -175,6 +268,12 @@ namespace Bidak.Manager
                 // Change color based on state
                 Color targetColor = isSelected ? selectedColor : hoverColor;
                 ApplyColorToRenderers(targetColor);
+                
+                Debug.Log($"Applied hover effect with color: {targetColor}");
+            }
+            else
+            {
+                Debug.Log($"Skipping hover - camera validation failed. Camera: {currentCamera?.name ?? "None"}");
             }
         }
 
@@ -187,10 +286,10 @@ namespace Bidak.Manager
                 return;
 
             // Determine which camera is being used
-            Camera currentCamera = eventData.pressEventCamera ?? Camera.main;
+            Camera currentCamera = GetCurrentActiveCamera(eventData);
 
-            // Only revert hover effect if the card is in the current camera's view
-            if (IsCardInCurrentCamera(currentCamera))
+            // Apply exit effect (more lenient camera check)
+            if (ShouldApplyHoverEffect(currentCamera))
             {
                 // Scale back to original
                 StartCoroutine(ScaleCard(originalScale));
@@ -224,31 +323,39 @@ namespace Bidak.Manager
                 return;
             }
 
-            // Check camera validity - for now, allow all cameras to work
-            Camera currentCamera = eventData.pressEventCamera ?? Camera.main;
-            Debug.Log($"Using camera: {currentCamera?.name ?? "None"}");
-
-            // Check if it's the correct player's turn
-            // GameManagerChess uses 0-based indexing (0,1), playerIndex is 1-based (1,2)
-            int expectedGameManagerPlayer = playerIndex - 1;
-            if (GameManagerChess.Instance != null && !GameManagerChess.Instance.IsPlayerTurn(expectedGameManagerPlayer))
+            // Check if this card belongs to the current player
+            if (!IsCurrentPlayersTurn())
             {
-                Debug.Log($"Not player {playerIndex}'s turn. Current player: {GameManagerChess.Instance.currentPlayerIndex}, Expected: {expectedGameManagerPlayer}");
+                Debug.Log($"Skipping click - not current player's turn. Card belongs to player {playerIndex}, current player is {GameManagerChess.Instance?.currentPlayerIndex + 1}");
                 return;
             }
 
-            Debug.Log($"Processing card click - Current selection state: {isSelected}");
+            // Determine which camera is being used
+            Camera currentCamera = GetCurrentActiveCamera(eventData);
+            Debug.Log($"Using camera: {currentCamera?.name ?? "None"}");
 
-            // Toggle selection
-            if (!isSelected)
+            // Same permissive camera check as hover
+            if (currentCamera != null && IsCardAccessibleFromCamera(currentCamera))
             {
-                Debug.Log("Selecting card...");
-                SelectCard();
+                Debug.Log($"Processing card click - Current selection state: {isSelected}");
+
+                // Toggle selection
+                if (!isSelected)
+                {
+                    Debug.Log("Selecting card...");
+                    PlaySound(selectSound, currentCamera);
+                    SelectCard();
+                }
+                else
+                {
+                    Debug.Log("Activating card...");
+                    PlaySound(activateSound, currentCamera);
+                    ActivateCard();
+                }
             }
             else
             {
-                Debug.Log("Activating card...");
-                ActivateCard();
+                Debug.Log($"Skipping click - camera validation failed. Camera: {currentCamera?.name ?? "None"}");
             }
         }
 
@@ -258,6 +365,158 @@ namespace Bidak.Manager
 
             // Check if the card is a child of the current camera
             return transform.IsChildOf(currentCamera.transform);
+        }
+        
+        /// <summary>
+        /// Get the current active camera from event data or camera switch
+        /// </summary>
+        private Camera GetCurrentActiveCamera(PointerEventData eventData)
+        {
+            // Try to get camera from event data first
+            Camera eventCamera = eventData?.pressEventCamera ?? eventData?.enterEventCamera;
+            
+            // If no camera from event, try to get from camera switch
+            if (eventCamera == null && cameraSwitch != null && cameraSwitch.currentCamera != null)
+            {
+                eventCamera = cameraSwitch.currentCamera;
+            }
+            
+            // Final fallback to main camera
+            return eventCamera ?? Camera.main;
+        }
+        
+        /// <summary>
+        /// Check if hover effect should be applied (permissive camera validation)
+        /// </summary>
+        private bool ShouldApplyHoverEffect(Camera currentCamera)
+        {
+            if (currentCamera == null) 
+            {
+                Debug.Log("No current camera - denying hover");
+                return false;
+            }
+            
+            // Check if it's the current player's turn first
+            if (!IsCurrentPlayersTurn())
+            {
+                Debug.Log("Not current player's turn - denying hover");
+                return false;
+            }
+            
+            // More permissive approach - just check if card is accessible
+            bool isAccessible = IsCardAccessibleFromCamera(currentCamera);
+            Debug.Log($"Card accessible from camera: {isAccessible}");
+            
+            return isAccessible;
+        }
+        
+        /// <summary>
+        /// Check if the given camera belongs to the current player
+        /// </summary>
+        private bool IsCameraForCurrentPlayer(Camera camera)
+        {
+            if (camera == null || cameraSwitch == null || GameManagerChess.Instance == null)
+                return false;
+            
+            int currentPlayerIndex = GameManagerChess.Instance.currentPlayerIndex;
+            
+            // Check if camera is the main camera for current player
+            if (cameraSwitch.mainCameras != null && cameraSwitch.mainCameras.Length > currentPlayerIndex)
+            {
+                Camera expectedMainCamera = cameraSwitch.mainCameras[currentPlayerIndex]?.GetComponent<Camera>();
+                if (camera == expectedMainCamera)
+                {
+                    Debug.Log($"Camera matches player {currentPlayerIndex + 1} main camera");
+                    return true;
+                }
+            }
+            
+            // Check if camera is the card camera for current player  
+            if (cameraSwitch.cardCameras != null && cameraSwitch.cardCameras.Length > currentPlayerIndex)
+            {
+                Camera expectedCardCamera = cameraSwitch.cardCameras[currentPlayerIndex]?.GetComponent<Camera>();
+                if (camera == expectedCardCamera)
+                {
+                    Debug.Log($"Camera matches player {currentPlayerIndex + 1} card camera");
+                    return true;
+                }
+            }
+            
+            Debug.Log($"Camera does not match any camera for player {currentPlayerIndex + 1}");
+            return false;
+        }
+        
+        /// <summary>
+        /// Check if card is accessible from the given camera
+        /// </summary>
+        private bool IsCardAccessibleFromCamera(Camera camera)
+        {
+            if (camera == null) return false;
+            
+            // Check if the card is within camera's view frustum
+            Bounds cardBounds = GetRendererBounds();
+            Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(camera);
+            
+            return GeometryUtility.TestPlanesAABB(frustumPlanes, cardBounds);
+        }
+        
+        /// <summary>
+        /// Check if it's the current player's turn
+        /// </summary>
+        private bool IsCurrentPlayersTurn()
+        {
+            if (GameManagerChess.Instance == null) 
+            {
+                Debug.Log("No GameManagerChess instance - allowing turn");
+                return true; // Fallback if no game manager
+            }
+            
+            // Convert 1-based playerIndex to 0-based for GameManagerChess
+            int expectedGameManagerPlayer = playerIndex - 1;
+            bool isPlayerTurn = GameManagerChess.Instance.IsPlayerTurn(expectedGameManagerPlayer);
+            
+            Debug.Log($"Turn check: playerIndex={playerIndex}, expected={expectedGameManagerPlayer}, current={GameManagerChess.Instance.currentPlayerIndex}, result={isPlayerTurn}");
+            
+            return isPlayerTurn;
+        }
+        
+        /// <summary>
+        /// Play sound through the active camera's audio listener
+        /// </summary>
+        private void PlaySound(AudioClip clip, Camera targetCamera)
+        {
+            if (clip == null || targetCamera == null) return;
+            
+            // Try to find AudioListener on the camera
+            AudioListener audioListener = targetCamera.GetComponent<AudioListener>();
+            
+            // If no listener on camera, try to find any active audio listener
+            if (audioListener == null)
+            {
+                audioListener = FindObjectOfType<AudioListener>();
+            }
+            
+            if (audioListener != null)
+            {
+                // Create temporary AudioSource to play the sound
+                GameObject tempAudioObject = new GameObject("TempCardAudio");
+                tempAudioObject.transform.position = audioListener.transform.position;
+                
+                AudioSource audioSource = tempAudioObject.AddComponent<AudioSource>();
+                audioSource.clip = clip;
+                audioSource.volume = soundVolume;
+                audioSource.spatialBlend = 0f; // 2D sound
+                audioSource.Play();
+                
+                // Destroy the temporary object after the clip finishes
+                Destroy(tempAudioObject, clip.length + 0.1f);
+                
+                Debug.Log($"Playing {clip.name} sound at volume {soundVolume}");
+            }
+            else
+            {
+                Debug.LogWarning("No AudioListener found to play card sound");
+            }
         }
 
         private System.Collections.IEnumerator ScaleCard(Vector3 targetScale)
@@ -305,6 +564,12 @@ namespace Bidak.Manager
             
             // Deselect other cards
             DeselectOtherCards();
+            
+            // Enter card mode
+            if (cardManager != null)
+            {
+                cardManager.EnterCardMode(this);
+            }
             
             // Notify camera switch
             if (cameraSwitch != null)
@@ -425,6 +690,18 @@ namespace Bidak.Manager
                 RestoreOriginalColors();
                 Debug.Log($"Card deselected: {cardData?.cardName ?? gameObject.name}");
                 
+                // Exit card mode if this card was selected
+                if (cardManager != null && cardManager.GetSelectedCard() == this)
+                {
+                    cardManager.ExitCardMode();
+                }
+                
+                // End targeting if active
+                if (targetingSystem != null && targetingSystem.isTargeting)
+                {
+                    targetingSystem.EndTargeting();
+                }
+                
                 // Notify camera switch
                 if (cameraSwitch != null)
                 {
@@ -447,15 +724,73 @@ namespace Bidak.Manager
                     case Bidak.Data.CardEffectType.TripleMove:
                     case Bidak.Data.CardEffectType.DiagonalAttack:
                     case Bidak.Data.CardEffectType.ProtectedRing:
-                    case Bidak.Data.CardEffectType.ConquerorLeap:
-                    case Bidak.Data.CardEffectType.NiceDay:
                     case Bidak.Data.CardEffectType.PowerfulMove:
                     case Bidak.Data.CardEffectType.UnstoppableForce:
+                    case Bidak.Data.CardEffectType.NiceDay:
+                    case Bidak.Data.CardEffectType.BackMove:
+                    case Bidak.Data.CardEffectType.LeapMove:
+                    case Bidak.Data.CardEffectType.RestoreMove:
                         return true; // These effects need a target piece
                 }
             }
             
             return false;
+        }
+        
+        /// <summary>
+        /// Determine if card should end turn based on its type
+        /// </summary>
+        private bool ShouldCardEndTurn(ChessCardData card)
+        {
+            if (card == null || card.cardEffects == null || card.cardEffects.Count == 0)
+                return true; // Default to ending turn
+            
+            foreach (var effect in card.cardEffects)
+            {
+                // Attack and Defense cards end the turn
+                switch (effect.effectType)
+                {
+                    // Attack effects - end turn
+                    case Bidak.Data.CardEffectType.QueenCollision:
+                    case Bidak.Data.CardEffectType.DiagonalAttack:
+                    case Bidak.Data.CardEffectType.UnstoppableForce:
+                    case Bidak.Data.CardEffectType.DanceLikeQueen:
+                    case Bidak.Data.CardEffectType.DanceLikeElephant:
+                        Debug.Log($"Attack card {effect.effectType} - will end turn");
+                        return true;
+                    
+                    // Defense effects - end turn
+                    case Bidak.Data.CardEffectType.RoyalCommand:
+                    case Bidak.Data.CardEffectType.WhereIsMyDefense:
+                    case Bidak.Data.CardEffectType.NotToday:
+                    case Bidak.Data.CardEffectType.TimeFrozen:
+                    case Bidak.Data.CardEffectType.ProtectedRing:
+                    case Bidak.Data.CardEffectType.IGotYou:
+                        Debug.Log($"Defense card {effect.effectType} - will end turn");
+                        return true;
+                    
+                    // Movement/Effect cards - don't end turn (player keeps their turn)
+                    case Bidak.Data.CardEffectType.DoubleMove:
+                    case Bidak.Data.CardEffectType.TripleMove:
+                    case Bidak.Data.CardEffectType.StraightMove:
+                    case Bidak.Data.CardEffectType.BlockadeMove:
+                    case Bidak.Data.CardEffectType.ForwardTwoMoves:
+                    case Bidak.Data.CardEffectType.TwoDirectionMove:
+                    case Bidak.Data.CardEffectType.PowerfulMove:
+                    case Bidak.Data.CardEffectType.NiceDay:
+                    case Bidak.Data.CardEffectType.BackMove:
+                    case Bidak.Data.CardEffectType.LeapMove:
+                    case Bidak.Data.CardEffectType.RestoreMove:
+                    case Bidak.Data.CardEffectType.BackFromDead:
+                    case Bidak.Data.CardEffectType.StoneTomorrow:
+                    case Bidak.Data.CardEffectType.SpecialMove:
+                        Debug.Log($"Effect card {effect.effectType} - will NOT end turn");
+                        return false;
+                }
+            }
+            
+            Debug.Log("Unknown card type - defaulting to end turn");
+            return true; // Default to ending turn for unknown effects
         }
 
         private void ApplyColorToRenderers(Color color)
@@ -489,13 +824,50 @@ namespace Bidak.Manager
         // Public methods for external control
         public void SetCardData(ChessCardData data, int player)
         {
+            // Always update card data, even if it seems the same
             cardData = data;
             playerIndex = player;
-            canBeActivated = true; // Ensure card can be activated when data is set
+            
+            // Force reset interaction states
+            canBeActivated = true;
             isActivated = false;
             isSelected = false;
             
-            Debug.Log($"SetCardData called - Card: {data?.cardName ?? "NULL"}, Player: {player}, canBeActivated: {canBeActivated}");
+            // Re-ensure event trigger and interaction setup
+            EnsureEventTrigger();
+            ValidateInteractionSetup();
+            
+            Debug.Log($"SetCardData FORCED UPDATE - Card: {data?.cardName ?? "NULL"}, Player: {player}, canBeActivated: {canBeActivated}");
+        }
+        
+        /// <summary>
+        /// Force update card data during runtime
+        /// </summary>
+        [ContextMenu("Force Card Data Update")]
+        public void ForceCardDataUpdate()
+        {
+            if (cardData != null)
+            {
+                SetCardData(cardData, playerIndex);
+                Debug.Log($"Manually forced card data update for {cardData.cardName}");
+            }
+        }
+        
+        /// <summary>
+        /// Set audio settings from ChessCardManager
+        /// </summary>
+        /// <param name="hover">Hover sound clip</param>
+        /// <param name="select">Select sound clip</param>
+        /// <param name="activate">Activate sound clip</param>
+        /// <param name="volume">Sound volume (0-1)</param>
+        public void SetAudioSettings(AudioClip hover, AudioClip select, AudioClip activate, float volume)
+        {
+            hoverSound = hover;
+            selectSound = select;
+            activateSound = activate;
+            soundVolume = Mathf.Clamp01(volume);
+            
+            Debug.Log($"Audio settings applied to {gameObject.name} - Volume: {soundVolume}");
         }
 
         public void ForceDeactivate()
@@ -512,6 +884,66 @@ namespace Bidak.Manager
             canBeActivated = true;
             isSelected = false;
             RestoreOriginalColors();
+        }
+        
+        /// <summary>
+        /// Force enable interaction for debugging
+        /// </summary>
+        [ContextMenu("Force Enable Interaction")]
+        public void ForceEnableInteraction()
+        {
+            canBeActivated = true;
+            isActivated = false;
+            isSelected = false;
+            
+            // Re-ensure event trigger
+            EnsureEventTrigger();
+            
+            Debug.Log($"Forced interaction enabled for {gameObject.name}");
+        }
+        
+        /// <summary>
+        /// Test click method for debugging
+        /// </summary>
+        [ContextMenu("Test Click")]
+        public void TestClick()
+        {
+            Debug.Log($"Test click on {gameObject.name} - State: activated={isActivated}, canBeActivated={canBeActivated}, selected={isSelected}");
+            
+            if (!isSelected)
+            {
+                SelectCard();
+            }
+            else
+            {
+                ActivateCard();
+            }
+        }
+        
+        [ContextMenu("Debug Card State")]
+        public void DebugCardState()
+        {
+            Debug.Log("=== CARD STATE DEBUG ===");
+            Debug.Log($"Card Name: {cardData?.cardName ?? "NULL"}");
+            Debug.Log($"Player Index: {playerIndex}");
+            Debug.Log($"Can Be Activated: {canBeActivated}");
+            Debug.Log($"Is Activated: {isActivated}");
+            Debug.Log($"Is Selected: {isSelected}");
+            Debug.Log($"Game Manager Exists: {GameManagerChess.Instance != null}");
+            if (GameManagerChess.Instance != null)
+            {
+                Debug.Log($"Current Player Index: {GameManagerChess.Instance.currentPlayerIndex}");
+                Debug.Log($"Current Player Name: {GameManagerChess.Instance.GetCurrentPlayerName()}");
+                Debug.Log($"Is Current Player's Turn: {IsCurrentPlayersTurn()}");
+            }
+            Debug.Log($"Camera Switch Exists: {cameraSwitch != null}");
+            if (cameraSwitch != null)
+            {
+                Debug.Log($"Current Camera: {cameraSwitch.currentCamera?.name ?? "NULL"}");
+                Debug.Log($"Main Cameras Count: {cameraSwitch.mainCameras?.Length ?? 0}");
+                Debug.Log($"Card Cameras Count: {cameraSwitch.cardCameras?.Length ?? 0}");
+            }
+            Debug.Log("========================");
         }
     }
 }

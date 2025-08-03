@@ -43,30 +43,77 @@ public class CameraSwitch : MonoBehaviour
     
     private void InitializeCameras()
     {
+        Debug.Log($"Initializing cameras for player index: {currentPlayerIndex}");
+        
         // Player index 0: use main camera index 0 and card camera index 0
         // Player index 1: use main camera index 1 and card camera index 1
         if(currentPlayerIndex == 0)
         {
-            camera1 = mainCameras[0].GetComponent<Camera>();
-            camera2 = cardCameras[0].GetComponent<Camera>();
+            // Player 1 (index 0) - use cameras[0]
+            if (mainCameras.Length > 0)
+            {
+                camera1 = mainCameras[0].GetComponent<Camera>();
+                Debug.Log($"Player 1 main camera: {mainCameras[0].name}");
+            }
+            if (cardCameras.Length > 0 && cardCameras[0] != null)
+            {
+                camera2 = cardCameras[0].GetComponent<Camera>();
+                Debug.Log($"Player 1 card camera: {cardCameras[0].name}");
+            }
             
-            // Disable other player's cameras
-            if (mainCameras.Length > 1) mainCameras[1].GetComponent<Camera>().enabled = false;
-            if (cardCameras.Length > 1) cardCameras[1].GetComponent<Camera>().enabled = false;
+            // Disable player 2's cameras
+            if (mainCameras.Length > 1 && mainCameras[1] != null) 
+            {
+                mainCameras[1].GetComponent<Camera>().enabled = false;
+                Debug.Log($"Disabled Player 2 main camera: {mainCameras[1].name}");
+            }
+            if (cardCameras.Length > 1 && cardCameras[1] != null) 
+            {
+                cardCameras[1].GetComponent<Camera>().enabled = false;
+                Debug.Log($"Disabled Player 2 card camera: {cardCameras[1].name}");
+            }
         }
-        else
+        else // currentPlayerIndex == 1
         {
-            camera1 = mainCameras[1].GetComponent<Camera>();
-            camera2 = cardCameras[1].GetComponent<Camera>();
+            // Player 2 (index 1) - use cameras[1]
+            if (mainCameras.Length > 1)
+            {
+                camera1 = mainCameras[1].GetComponent<Camera>();
+                Debug.Log($"Player 2 main camera: {mainCameras[1].name}");
+            }
+            if (cardCameras.Length > 1 && cardCameras[1] != null)
+            {
+                camera2 = cardCameras[1].GetComponent<Camera>();
+                Debug.Log($"Player 2 card camera: {cardCameras[1].name}");
+            }
             
-            // Disable other player's cameras
-            mainCameras[0].GetComponent<Camera>().enabled = false;
-            cardCameras[0].GetComponent<Camera>().enabled = false;
+            // Disable player 1's cameras
+            if (mainCameras.Length > 0 && mainCameras[0] != null)
+            {
+                mainCameras[0].GetComponent<Camera>().enabled = false;
+                Debug.Log($"Disabled Player 1 main camera: {mainCameras[0].name}");
+            }
+            if (cardCameras.Length > 0 && cardCameras[0] != null)
+            {
+                cardCameras[0].GetComponent<Camera>().enabled = false;
+                Debug.Log($"Disabled Player 1 card camera: {cardCameras[0].name}");
+            }
         }
 
-        camera1.enabled = true;
-        currentCamera = camera1;
-        camera2.enabled = false;
+        // Enable the main camera for current player
+        if (camera1 != null)
+        {
+            camera1.enabled = true;
+            currentCamera = camera1;
+            Debug.Log($"Enabled main camera: {camera1.name}");
+        }
+        
+        // Disable card camera initially
+        if (camera2 != null)
+        {
+            camera2.enabled = false;
+            Debug.Log($"Card camera ready but disabled: {camera2.name}");
+        }
     }
 
     // Update is called once per frame

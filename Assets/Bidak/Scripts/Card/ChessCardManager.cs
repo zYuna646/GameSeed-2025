@@ -18,6 +18,12 @@ namespace Bidak.Manager
         [Header("Card Management Settings")]
         [SerializeField] private int maxActiveCards = 3;
         [SerializeField] private int maxStorageCards = 5;
+        
+        [Header("Card Audio Settings")]
+        [SerializeField] private AudioClip cardHoverSound;
+        [SerializeField] private AudioClip cardSelectSound;
+        [SerializeField] private AudioClip cardActivateSound;
+        [SerializeField][Range(0f, 1f)] private float cardSoundVolume = 0.5f;
 
         // Events for card-related actions
         public event Action<int, ChessCardData> OnCardActivated;
@@ -25,10 +31,21 @@ namespace Bidak.Manager
         public event Action<int, ChessCardData> OnCardAddedToStorage;
         public event Action<int, ChessCardData> OnCardRemovedFromStorage;
         public event Action<int> OnPlayerCardsChanged;
+        public event Action<bool> OnCardModeChanged; // New event for card mode changes
+        
+        [Header("Card Mode Settings")]
+        public bool isCardModeActive = false;
+        public ChessCardHoverEffect currentSelectedCard = null;
 
         // Tracking for changes
         private List<ChessCardData> player1LastActiveCards = new List<ChessCardData>();
         private List<ChessCardData> player2LastActiveCards = new List<ChessCardData>();
+
+        private void Start()
+        {
+            // Ensure all cards are properly initialized
+            Update();
+        }
 
         private void Update()
         {
@@ -37,6 +54,16 @@ namespace Bidak.Manager
 
             // Check for changes in Player 2 active cards
             CheckForCardChanges(2, player2ActiveCards, player2LastActiveCards);
+            
+            // Check for Ctrl+C to exit card mode
+            if (Input.GetKeyDown(KeyCode.C) && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
+            {
+                if (isCardModeActive)
+                {
+                    ExitCardMode();
+                    Debug.Log("Exited card mode via Ctrl+C");
+                }
+            }
         }
 
         private void CheckForCardChanges(int playerIndex, List<ChessCardData> currentCards, List<ChessCardData> lastCards)
@@ -193,5 +220,235 @@ namespace Bidak.Manager
                 player2StorageCards.Clear();
             }
         }
+        
+        /// <summary>
+        /// Setup ChessCardHoverEffect with audio settings from manager
+        /// </summary>
+        /// <param name="cardHoverEffect">The ChessCardHoverEffect component to setup</param>
+        /// <param name="cardData">Card data to assign</param>
+        /// <param name="playerIndex">Player index (1 or 2)</param>
+        public void SetupCardHoverEffect(ChessCardHoverEffect cardHoverEffect, ChessCardData cardData, int playerIndex)
+        {
+            if (cardHoverEffect == null)
+            {
+                Debug.LogError("ChessCardHoverEffect is null - cannot setup");
+                return;
+            }
+            
+            // Set card data and player index
+            cardHoverEffect.SetCardData(cardData, playerIndex);
+            
+            // Apply audio settings from manager
+            cardHoverEffect.SetAudioSettings(cardHoverSound, cardSelectSound, cardActivateSound, cardSoundVolume);
+            
+            Debug.Log($"Setup card hover effect for {cardData?.cardName ?? "Unknown"} (Player {playerIndex}) with audio settings");
+        }
+        
+        /// <summary>
+        /// Setup multiple card hover effects with audio settings
+        /// </summary>
+        /// <param name="cardObjects">Array of GameObjects containing ChessCardHoverEffect components</param>
+        /// <param name="playerIndex">Player index (1 or 2)</param>
+        public void SetupPlayerCards(GameObject[] cardObjects, int playerIndex)
+        {
+            if (cardObjects == null || cardObjects.Length == 0)
+            {
+                Debug.LogWarning($"No card objects provided for player {playerIndex}");
+                return;
+            }
+            
+            var activeCards = GetActiveCards(playerIndex);
+            
+            for (int i = 0; i < cardObjects.Length && i < activeCards.Count; i++)
+            {
+                if (cardObjects[i] != null)
+                {
+                    ChessCardHoverEffect hoverEffect = cardObjects[i].GetComponent<ChessCardHoverEffect>();
+                    if (hoverEffect == null)
+                    {
+                        hoverEffect = cardObjects[i].AddComponent<ChessCardHoverEffect>();
+                        Debug.Log($"Added ChessCardHoverEffect component to {cardObjects[i].name}");
+                    }
+                    
+                    SetupCardHoverEffect(hoverEffect, activeCards[i], playerIndex);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Get audio settings for external use
+        /// </summary>
+        /// <returns>Tuple containing audio clips and volume</returns>
+        public (AudioClip hoverSound, AudioClip selectSound, AudioClip activateSound, float volume) GetAudioSettings()
+        {
+            return (cardHoverSound, cardSelectSound, cardActivateSound, cardSoundVolume);
+        }
+        
+        /// <summary>
+        /// Update audio settings for all existing card hover effects
+        /// </summary>
+        public void UpdateAllCardAudioSettings()
+        {
+            ChessCardHoverEffect[] allCardEffects = FindObjectsOfType<ChessCardHoverEffect>();
+            
+            foreach (var cardEffect in allCardEffects)
+            {
+                cardEffect.SetAudioSettings(cardHoverSound, cardSelectSound, cardActivateSound, cardSoundVolume);
+            }
+            
+            Debug.Log($"Updated audio settings for {allCardEffects.Length} card hover effects");
+        }
+        
+        /// <summary>
+        /// Enter card mode when a card is selected
+        /// </summary>
+        /// <param name="selectedCard">The card that was selected</param>
+        public void EnterCardMode(ChessCardHoverEffect selectedCard)
+        {
+            if (selectedCard == null) return;
+            
+            // Exit previous card mode if active
+            if (isCardModeActive && currentSelectedCard != null)
+            {
+                currentSelectedCard.Deselect();
+            }
+            
+            isCardModeActive = true;
+            currentSelectedCard = selectedCard;
+            
+            OnCardModeChanged?.Invoke(true);
+            
+            Debug.Log($"Entered card mode with card: {selectedCard.cardData?.cardName ?? "Unknown"}");
+        }
+        
+        /// <summary>
+        /// Exit card mode
+        /// </summary>
+        public void ExitCardMode()
+        {
+            if (!isCardModeActive) return;
+            
+            // Deselect current card
+            if (currentSelectedCard != null)
+            {
+                // Explicitly reset card state
+                currentSelectedCard.isSelected = false;
+                currentSelectedCard.Deselect();
+                currentSelectedCard = null;
+            }
+            
+            isCardModeActive = false;
+            
+            OnCardModeChanged?.Invoke(false);
+            
+            Debug.Log("Exited card mode - resetting all card states");
+        }
+        
+        /// <summary>
+        /// Check if we're in card mode
+        /// </summary>
+        /// <returns>True if card mode is active</returns>
+        public bool IsCardModeActive()
+        {
+            bool result = isCardModeActive && currentSelectedCard != null;
+            Debug.Log($"IsCardModeActive check: isCardModeActive={isCardModeActive}, currentSelectedCard={currentSelectedCard != null}, result={result}");
+            return result;
+        }
+        
+        /// <summary>
+        /// Get the currently selected card in card mode
+        /// </summary>
+        /// <returns>Currently selected card or null</returns>
+        public ChessCardHoverEffect GetSelectedCard()
+        {
+            return isCardModeActive ? currentSelectedCard : null;
+        }
+        
+        #if UNITY_EDITOR
+        /// <summary>
+        /// Editor context menu to update all card audio settings for testing
+        /// </summary>
+        [ContextMenu("Update All Card Audio Settings")]
+        private void EditorUpdateAllCardAudioSettings()
+        {
+            UpdateAllCardAudioSettings();
+        }
+        
+        /// <summary>
+        /// Debug all card hover effects in the scene
+        /// </summary>
+        [ContextMenu("Debug All Cards")]
+        private void EditorDebugAllCards()
+        {
+            ChessCardHoverEffect[] allCardEffects = FindObjectsOfType<ChessCardHoverEffect>();
+            Debug.Log($"Found {allCardEffects.Length} card hover effects in scene:");
+            
+            for (int i = 0; i < allCardEffects.Length; i++)
+            {
+                var card = allCardEffects[i];
+                Debug.Log($"  {i}: {card.gameObject.name} - Player: {card.playerIndex}, " +
+                         $"Card: {card.cardData?.cardName ?? "NULL"}, " +
+                         $"CanActivate: {card.canBeActivated}, " +
+                         $"Activated: {card.isActivated}, " +
+                         $"Selected: {card.isSelected}");
+            }
+        }
+        
+        /// <summary>
+        /// Editor context menu to setup player 1 cards for testing
+        /// </summary>
+        [ContextMenu("Setup Player 1 Cards")]
+        private void EditorSetupPlayer1Cards()
+        {
+            ChessCardHoverEffect[] allCardEffects = FindObjectsOfType<ChessCardHoverEffect>();
+            List<ChessCardHoverEffect> player1Cards = new List<ChessCardHoverEffect>();
+            
+            foreach (var cardEffect in allCardEffects)
+            {
+                if (cardEffect.playerIndex == 1)
+                {
+                    player1Cards.Add(cardEffect);
+                }
+            }
+            
+            foreach (var cardEffect in player1Cards)
+            {
+                if (cardEffect.cardData != null)
+                {
+                    SetupCardHoverEffect(cardEffect, cardEffect.cardData, 1);
+                }
+            }
+            
+            Debug.Log($"Setup {player1Cards.Count} Player 1 cards with audio settings");
+        }
+        
+        /// <summary>
+        /// Editor context menu to setup player 2 cards for testing
+        /// </summary>
+        [ContextMenu("Setup Player 2 Cards")]
+        private void EditorSetupPlayer2Cards()
+        {
+            ChessCardHoverEffect[] allCardEffects = FindObjectsOfType<ChessCardHoverEffect>();
+            List<ChessCardHoverEffect> player2Cards = new List<ChessCardHoverEffect>();
+            
+            foreach (var cardEffect in allCardEffects)
+            {
+                if (cardEffect.playerIndex == 2)
+                {
+                    player2Cards.Add(cardEffect);
+                }
+            }
+            
+            foreach (var cardEffect in player2Cards)
+            {
+                if (cardEffect.cardData != null)
+                {
+                    SetupCardHoverEffect(cardEffect, cardEffect.cardData, 2);
+                }
+            }
+            
+            Debug.Log($"Setup {player2Cards.Count} Player 2 cards with audio settings");
+        }
+        #endif
     }
 }

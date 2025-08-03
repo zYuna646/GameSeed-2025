@@ -146,6 +146,26 @@ public class ChessPieceData : ScriptableObject
     [Header("Turn Tracking")]
     public int lastMoveTurn = -1;
     public int turnsWithoutMoving = 0;
+    
+    [Header("Card Effect Properties")]
+    public int? cardEffectMoveCountBonus = null;
+    public bool cardEffectCanMoveStraight = false;
+    public bool cardEffectCanMoveDiagonally = false;
+    public bool cardEffectCanAttackDiagonally = false;
+    public bool cardEffectCanAttackStraight = false;
+    public bool cardEffectHasLightProtection = false;
+    public bool cardEffectHasFullProtection = false;
+    public bool cardEffectCanSwapPositions = false;
+    public bool cardEffectCanRevive = false;
+    public bool cardEffectCanPromoteInPlace = false;
+    public bool cardEffectCanCreateBlockade = false;
+    public bool cardEffectCanJump = false;
+    public bool cardEffectCanMoveBackward = false;
+    public bool cardEffectCanMoveSideways = false;
+    public bool cardEffectIsFrozen = false;
+    public int cardEffectStepsForward = 0;
+    public int cardEffectProtectionDuration = 0;
+    public int cardEffectDuration = 0;
 
     // Enum to define different chess piece types
     public enum PieceType
@@ -174,6 +194,7 @@ public class ChessPieceData : ScriptableObject
                 points = 5;
                 canCastle = true;
                 break;
+
 
             case PieceType.Knight:
                 pieceName = "Knight";

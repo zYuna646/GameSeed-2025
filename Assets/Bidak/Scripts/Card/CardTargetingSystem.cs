@@ -21,6 +21,11 @@ namespace Bidak.Manager
         public ChessCardHoverEffect selectedCard;
         public PieceController targetPiece;
         public PieceController hoveredPiece;
+        
+        [Header("Audio Feedback")]
+        [SerializeField] private AudioClip targetConfirmSound;
+        [SerializeField] private AudioClip targetCancelSound;
+        [SerializeField][Range(0f, 1f)] private float soundVolume = 0.7f;
 
         // Visual feedback
         private Material originalMaterial;
@@ -72,6 +77,49 @@ namespace Bidak.Manager
             hoveredPiece = null;
 
             Debug.Log("Ended targeting mode");
+        }
+        
+        public void EndTargetingWithSound(bool wasSuccessful = false)
+        {
+            // Play appropriate sound
+            AudioClip soundToPlay = wasSuccessful ? targetConfirmSound : targetCancelSound;
+            PlayTargetingSound(soundToPlay);
+            
+            EndTargeting();
+        }
+        
+        private void PlayTargetingSound(AudioClip clip)
+        {
+            if (clip == null) return;
+            
+            // Try to find active camera's audio listener
+            AudioListener audioListener = null;
+            
+            if (currentCamera != null)
+            {
+                audioListener = currentCamera.GetComponent<AudioListener>();
+            }
+            
+            if (audioListener == null)
+            {
+                audioListener = FindObjectOfType<AudioListener>();
+            }
+            
+            if (audioListener != null)
+            {
+                // Create temporary AudioSource to play the sound
+                GameObject tempAudioObject = new GameObject("TempTargetingAudio");
+                tempAudioObject.transform.position = audioListener.transform.position;
+                
+                AudioSource audioSource = tempAudioObject.AddComponent<AudioSource>();
+                audioSource.clip = clip;
+                audioSource.volume = soundVolume;
+                audioSource.spatialBlend = 0f; // 2D sound
+                audioSource.Play();
+                
+                // Destroy the temporary object after the clip finishes
+                Destroy(tempAudioObject, clip.length + 0.1f);
+            }
         }
 
         private void HandleTargeting()

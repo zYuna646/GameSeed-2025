@@ -210,13 +210,14 @@ public class PieceMovementController : MonoBehaviour
                 previousTile.ClearPiece();
             }
             
-            if (destinationTile != null &&
-                pieceController.pieceData != null &&
-                destinationTile.CanBeCaptured(pieceController.pieceData))
-            {
+            // if (destinationTile != null &&
+            //     pieceController.pieceData != null &&
+            //     destinationTile.CanBeCaptured(pieceController.pieceData))
+            // {
                 // Capture the destination tile
                 destinationTile.CaptureTile(pieceController.pieceData);
-            }
+            // }
+
 
             destinationTile = null;
         }
