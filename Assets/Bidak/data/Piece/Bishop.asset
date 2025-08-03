@@ -14,7 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pieceName: Bishop
   pieceType: 3
-  pieceColor: {r: 0, g: 0, b: 0, a: 0}
+  playerType: {r: 1, g: 1, b: 1, a: 1}
+  availableMaterials:
+  - {fileID: 2100000, guid: 792a4bad9e08b8e41bfbd3f0b8aac1ab, type: 2}
+  - {fileID: 2100000, guid: 54f19161a54e56442a8dd7f6239fc93b, type: 2}
+  - {fileID: 2100000, guid: 98a7fdcb4ebb44344b4afe0424d44b82, type: 2}
+  - {fileID: 2100000, guid: 26fed0ad2288580409bf94257121cd0f, type: 2}
+  - {fileID: 2100000, guid: f9ec407a080d408459742617c9dc6607, type: 2}
+  selectedMaterialIndex: 0
   modelPrefab: {fileID: 179124, guid: 0e05419ee891ad74497ac57de9b5dc7c, type: 3}
   icon: {fileID: 0}
   startPosition: {x: 0, y: 0, z: 0}
@@ -75,3 +82,51 @@ MonoBehaviour:
     m_RotationOrder: 4
   castleAnimation: {fileID: 0}
   enPassantAnimation: {fileID: 0}
+  spawnEffectPrefab: {fileID: 0}
+  spawnEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  spawnEffectDuration: 1
+  spawnEffectIntensity: 1
+  moveEffectPrefab: {fileID: 0}
+  moveEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  moveEffectDuration: 0.5
+  moveEffectIntensity: 1
+  loopMoveEffect: 1
+  moveEffectScale: {x: 0.5, y: 0.5, z: 0.5}
+  moveSoundEffect: {fileID: 0}
+  moveSoundVolume: 1
+  captureSoundEffect: {fileID: 0}
+  captureSoundVolume: 1
+  spawnSoundEffect: {fileID: 0}
+  spawnSoundVolume: 1
+  spawnSoundDelay: 0
+  deathSoundEffect: {fileID: 0}
+  deathSoundVolume: 1
+  capturingEffectPrefab: {fileID: 0}
+  capturingEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturingEffectDuration: 0.5
+  capturingEffectIntensity: 1
+  capturedEffectPrefab: {fileID: 0}
+  capturedEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturedEffectDuration: 0.5
+  capturedEffectIntensity: 1
+  deathEffectPrefab: {fileID: 0}
+  deathEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  deathEffectDuration: 1
+  deathEffectIntensity: 1
+  appliedEffects: []
+  canMoveMultipleTimes: 0
+  remainingMoves: 1
+  canAttackDiagonally: 0
+  canMoveBackward: 0
+  canMoveSideways: 0
+  hasLightProtection: 0
+  hasFullProtection: 0
+  protectionTurnsRemaining: 0
+  isBlockaded: 0
+  blockadeTurnsRemaining: 0
+  canPromoteInPlace: 0
+  canRevive: 0
+  canIgnoreBlocking: 0
+  immobilityTurns: 0
+  lastMoveTurn: -1
+  turnsWithoutMoving: 0

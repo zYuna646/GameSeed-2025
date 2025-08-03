@@ -132,11 +132,14 @@ public class TileController : MonoBehaviour
             // Use precise spawn position method
             Vector3 spawnPosition = GetPreciseSpawnPosition();
 
-            // Instantiate piece with static rotation
+            // Calculate rotation based on player type and banner positions
+            Quaternion spawnRotation = CalculatePieceRotation(instancePieceData, spawnPosition);
+
+            // Instantiate piece with calculated rotation
             currentPieceObject = Instantiate(
                 instancePieceData.modelPrefab,
                 spawnPosition,
-                Quaternion.Euler(pieceRotation),
+                spawnRotation,
                 transform
             );
 
@@ -495,5 +498,62 @@ public class TileController : MonoBehaviour
         // Implementation would find all tiles on the four diagonals
         
         return diagonalTiles;
+    }
+    
+    /// <summary>
+    /// Calculate piece rotation based on player type and banner positions
+    /// Player 1 pieces face Banner2, Player 2 pieces face Banner1
+    /// </summary>
+    private Quaternion CalculatePieceRotation(ChessPieceData pieceData, Vector3 piecePosition)
+    {
+        GameObject targetBanner = null;
+        
+        // Find the board spawner to get player color configuration
+        ChessBoardTileSpawner boardSpawner = FindObjectOfType<ChessBoardTileSpawner>();
+        
+        // Determine target banner based on player type
+        if (boardSpawner != null && pieceData.playerType == boardSpawner.player1Color)
+        {
+            // Player 1 faces Banner2
+            targetBanner = GameObject.FindWithTag("Banner2");
+        }
+        else if (boardSpawner != null && pieceData.playerType == boardSpawner.player2Color)
+        {
+            // Player 2 faces Banner1
+            targetBanner = GameObject.FindWithTag("Banner1");
+        }
+        else
+        {
+            // Fallback: assume white is player 1, everything else is player 2
+            if (pieceData.playerType == Color.white)
+            {
+                targetBanner = GameObject.FindWithTag("Banner2");
+            }
+            else
+            {
+                targetBanner = GameObject.FindWithTag("Banner1");
+            }
+        }
+        
+        // If target banner not found, use default rotation
+        if (targetBanner == null)
+        {
+            Debug.LogWarning($"Target banner not found for player type: {pieceData.playerType}");
+            return Quaternion.Euler(pieceRotation);
+        }
+        
+        // Calculate direction from piece to target banner
+        Vector3 directionToBanner = (targetBanner.transform.position - piecePosition).normalized;
+        
+        // Remove Y component to keep rotation only on horizontal plane
+        directionToBanner.y = 0;
+        
+        // Calculate rotation to face the banner
+        Quaternion lookRotation = Quaternion.LookRotation(directionToBanner);
+        
+        // Apply any additional piece rotation offset
+        Quaternion finalRotation = lookRotation * Quaternion.Euler(pieceRotation);
+        
+        return finalRotation;
     }
 }

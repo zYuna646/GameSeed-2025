@@ -17,6 +17,10 @@ MonoBehaviour:
   playerType: {r: 1, g: 1, b: 1, a: 1}
   availableMaterials:
   - {fileID: 2100000, guid: 792a4bad9e08b8e41bfbd3f0b8aac1ab, type: 2}
+  - {fileID: 2100000, guid: 54f19161a54e56442a8dd7f6239fc93b, type: 2}
+  - {fileID: 2100000, guid: 98a7fdcb4ebb44344b4afe0424d44b82, type: 2}
+  - {fileID: 2100000, guid: 26fed0ad2288580409bf94257121cd0f, type: 2}
+  - {fileID: 2100000, guid: f9ec407a080d408459742617c9dc6607, type: 2}
   selectedMaterialIndex: 0
   modelPrefab: {fileID: 169662, guid: 18b7cb56b19d0d949a04348dde2528a8, type: 3}
   icon: {fileID: 0}
@@ -97,3 +101,32 @@ MonoBehaviour:
   spawnSoundDelay: 0
   deathSoundEffect: {fileID: 0}
   deathSoundVolume: 1
+  capturingEffectPrefab: {fileID: 0}
+  capturingEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturingEffectDuration: 0.5
+  capturingEffectIntensity: 1
+  capturedEffectPrefab: {fileID: 0}
+  capturedEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturedEffectDuration: 0.5
+  capturedEffectIntensity: 1
+  deathEffectPrefab: {fileID: 0}
+  deathEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  deathEffectDuration: 1
+  deathEffectIntensity: 1
+  appliedEffects: []
+  canMoveMultipleTimes: 0
+  remainingMoves: 1
+  canAttackDiagonally: 0
+  canMoveBackward: 0
+  canMoveSideways: 0
+  hasLightProtection: 0
+  hasFullProtection: 0
+  protectionTurnsRemaining: 0
+  isBlockaded: 0
+  blockadeTurnsRemaining: 0
+  canPromoteInPlace: 0
+  canRevive: 0
+  canIgnoreBlocking: 0
+  immobilityTurns: 0
+  lastMoveTurn: -1
+  turnsWithoutMoving: 0

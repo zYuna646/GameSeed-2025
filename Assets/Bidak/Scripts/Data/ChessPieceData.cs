@@ -37,6 +37,8 @@ public class ChessPieceData : ScriptableObject
     [Header("State")]
     public bool isDead = false;
 
+    public bool isWhite = true;
+
     [Header("Animations")]
     // Idle Animation
     public AnimationClip idleAnimation;

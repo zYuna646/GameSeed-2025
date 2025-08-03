@@ -18,6 +18,8 @@ TagManager:
   - Player2Camera
   - PlayerCard
   - NetworkManager
+  - Banner1
+  - Banner2
   layers:
   - Default
   - TransparentFX

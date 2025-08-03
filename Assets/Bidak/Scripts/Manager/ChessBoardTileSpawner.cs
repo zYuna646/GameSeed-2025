@@ -273,11 +273,13 @@ public class ChessBoardTileSpawner : MonoBehaviour
         {
             pieceData.playerType = player1Color;
             pieceData.selectedMaterialIndex = player1MaterialIndex;
+            pieceData.isWhite = true;
         }
         else
         {
             pieceData.playerType = player2Color;
             pieceData.selectedMaterialIndex = player2MaterialIndex;
+            pieceData.isWhite = false;
         }
         
         // Set position data

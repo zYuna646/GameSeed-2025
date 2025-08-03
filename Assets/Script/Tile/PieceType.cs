@@ -63,6 +63,7 @@ public class PieceType : MonoBehaviour
         if (pieceController.pieceData)
         {
             hasMove = pieceController.pieceData.isFirstMove;
+            isWhite = pieceController.pieceData.isWhite;
         }
         origin = transform.position - new Vector3(0,0.62f, 0);
         //    switch (typePiece)
