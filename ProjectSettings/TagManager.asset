@@ -12,6 +12,10 @@ TagManager:
   - PieceBody
   - SlashEffect
   - HitEffect
+  - Player1Camera
+  - CardHeader
+  - Player2Camera
+  - PlayerCard
   layers:
   - Default
   - TransparentFX

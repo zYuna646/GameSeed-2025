@@ -24,6 +24,50 @@ namespace Bidak.Manager
         public event Action<int, ChessCardData> OnCardDeactivated;
         public event Action<int, ChessCardData> OnCardAddedToStorage;
         public event Action<int, ChessCardData> OnCardRemovedFromStorage;
+        public event Action<int> OnPlayerCardsChanged;
+
+        // Tracking for changes
+        private List<ChessCardData> player1LastActiveCards = new List<ChessCardData>();
+        private List<ChessCardData> player2LastActiveCards = new List<ChessCardData>();
+
+        private void Update()
+        {
+            // Check for changes in Player 1 active cards
+            CheckForCardChanges(1, player1ActiveCards, player1LastActiveCards);
+
+            // Check for changes in Player 2 active cards
+            CheckForCardChanges(2, player2ActiveCards, player2LastActiveCards);
+        }
+
+        private void CheckForCardChanges(int playerIndex, List<ChessCardData> currentCards, List<ChessCardData> lastCards)
+        {
+            // Check if card count has changed
+            if (currentCards.Count != lastCards.Count)
+            {
+                // Trigger update event
+                OnPlayerCardsChanged?.Invoke(playerIndex);
+
+                // Update last known cards
+                lastCards.Clear();
+                lastCards.AddRange(currentCards);
+                return;
+            }
+
+            // Check if card contents have changed
+            for (int i = 0; i < currentCards.Count; i++)
+            {
+                if (currentCards[i] != lastCards[i])
+                {
+                    // Trigger update event
+                    OnPlayerCardsChanged?.Invoke(playerIndex);
+
+                    // Update last known cards
+                    lastCards.Clear();
+                    lastCards.AddRange(currentCards);
+                    return;
+                }
+            }
+        }
 
         /// <summary>
         /// Activate a card from storage for a specific player

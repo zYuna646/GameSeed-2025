@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea041d47182a524496c727b1edf4107, type: 3}
+  m_Name: queen_collison
+  m_EditorClassIdentifier: 
+  cardName: 'Queen collision '
+  cardImage: {fileID: 21300000, guid: 0226b324a9b31a943a2ffb93ff967fe7, type: 3}
+  points: 9
+  cardPrefab: {fileID: 4946194189688133527, guid: 7eeefbe3f15b85b46aed06080ef77daa, type: 3}
+  type: 1
+  rank: 2
+  pieceType: 3
+  cardMaterial: {fileID: 2100000, guid: c9a5a1b1d45e8434ab4be816292e78ba, type: 2}
+  description: Saat gajah menyerang dan memakan bidak lawan, bidak lawan yang sejajar
+    secara diagonal juga ikut dihancurkan (maksimal 2 bidak). Efek area ini hanya
+    berlaku satu kali.
