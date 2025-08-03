@@ -13,6 +13,10 @@ TagManager:
   - SlashEffect
   - HitEffect
   - TileSelect
+  - Player1Camera
+  - CardHeader
+  - Player2Camera
+  - PlayerCard
   layers:
   - Default
   - TransparentFX
