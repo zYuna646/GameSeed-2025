@@ -5,33 +5,64 @@ using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    private float _elapsedTime = 0f;
+    [SerializeField] private TileManager tileManager;
+    [Header("Timer Settings")]
+    [SerializeField] private float _startingTime = 60f; // Set your desired countdown time
+    private float _remainingTime;
     private bool _isRunning = false;
-    public TextMeshProUGUI _textMeshPro;
 
-    public float CurrentTime => _elapsedTime;
+    [Header("UI Reference")]
+    [SerializeField] private TextMeshProUGUI _timerText;
+
+    public float RemainingTime => _remainingTime;
     public bool IsRunning => _isRunning;
 
     private void Start()
     {
+        ResetTimer();
         StartTimer();
     }
+
     void Update()
     {
         if (_isRunning)
         {
-            _elapsedTime += Time.deltaTime;
-        }
-        _textMeshPro.text = GetFormattedTime();
+            _remainingTime -= Time.deltaTime;
+            UpdateTimerDisplay();
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (IsRunning)
-                PauseTimer();
-            else
-                StartTimer();
+            if (_remainingTime <= 0f)
+            {
+                _remainingTime = 0f;
+                TimerComplete();
+            }
         }
+
+        if (tileManager.isGoing)
+        {
+            _isRunning = false;
+        }
+        else
+        {
+            _isRunning = true;
+        }
+    }
+
+    private void UpdateTimerDisplay()
+    {
+        _timerText.text = GetFormattedTime();
+    }
+
+    private void TimerComplete()
+    {
+        _isRunning = false;
+        Debug.Log("Timer finished!");
+        // Add your timer completion logic here
+    }
+
+    public void ToggleTimer()
+    {
+        if (_isRunning) PauseTimer();
+        else StartTimer();
     }
 
     public void StartTimer()
@@ -47,13 +78,20 @@ public class TimeManager : MonoBehaviour
     public void StopTimer()
     {
         _isRunning = false;
-        _elapsedTime = 0f;
+        _remainingTime = 0f;
+        UpdateTimerDisplay();
+    }
+
+    public void ResetTimer()
+    {
+        _remainingTime = _startingTime;
+        UpdateTimerDisplay();
     }
 
     public string GetFormattedTime()
     {
-        int minutes = Mathf.FloorToInt(_elapsedTime / 60f);
-        int seconds = Mathf.FloorToInt(_elapsedTime % 60f);
+        int minutes = Mathf.FloorToInt(_remainingTime / 60f);
+        int seconds = Mathf.FloorToInt(_remainingTime % 60f);
         return $"{minutes:00}:{seconds:00}";
     }
 }

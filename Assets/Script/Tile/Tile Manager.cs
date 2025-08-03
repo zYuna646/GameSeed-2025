@@ -17,7 +17,7 @@ public class TileManager : MonoBehaviour
     public Collider[] pieceColliders;
     [SerializeField] float cameraOffset;
     [SerializeField] public bool isPicked = false;
-    [SerializeField] bool isGoing = false;
+    [SerializeField] public bool isGoing = false;
     Vector3 cameraPoint;
     Vector3 mousePos;
 
