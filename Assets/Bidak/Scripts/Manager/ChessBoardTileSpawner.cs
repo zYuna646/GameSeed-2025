@@ -50,7 +50,7 @@ public class ChessBoardTileSpawner : MonoBehaviour
             {
                 // Determine tile color
                 bool isWhiteTile = (x + y) % 2 == 0;
-                BoardTileData tileData = isWhiteTile ? whiteTileData : blackTileData;
+                BoardTileData tileData = isWhiteTile ? Instantiate(whiteTileData) : Instantiate(blackTileData);
 
                 // Calculate tile position
                 Vector3 tilePosition = CalculateTilePosition(x, y, boardCenter);
