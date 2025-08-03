@@ -229,11 +229,11 @@ namespace Bidak.Manager
             Debug.Log($"Using camera: {currentCamera?.name ?? "None"}");
 
             // Check if it's the correct player's turn
-            // CameraSwitch.player is 0-based (0,1), playerIndex is 1-based (1,2)
-            int expectedCameraSwitchPlayer = playerIndex - 1;
-            if (cameraSwitch != null && cameraSwitch.player != expectedCameraSwitchPlayer)
+            // GameManagerChess uses 0-based indexing (0,1), playerIndex is 1-based (1,2)
+            int expectedGameManagerPlayer = playerIndex - 1;
+            if (GameManagerChess.Instance != null && !GameManagerChess.Instance.IsPlayerTurn(expectedGameManagerPlayer))
             {
-                Debug.Log($"Not player {playerIndex}'s turn. CameraSwitch player: {cameraSwitch.player}, Expected: {expectedCameraSwitchPlayer}");
+                Debug.Log($"Not player {playerIndex}'s turn. Current player: {GameManagerChess.Instance.currentPlayerIndex}, Expected: {expectedGameManagerPlayer}");
                 return;
             }
 

@@ -14,12 +14,6 @@ public class ChessBoardTileSpawner : MonoBehaviour
     
     [Header("Piece Configuration")]
     public List<ChessPieceData> pieceTemplates = new List<ChessPieceData>();
-    
-    [Header("Player Material Settings")]
-    public int player1MaterialIndex = 0;
-    public int player2MaterialIndex = 1;
-    public Color player1Color = Color.white;
-    public Color player2Color = Color.black;
 
     [Header("Tile Spacing")]
     public float tileWidth = 1f;
@@ -268,17 +262,38 @@ public class ChessBoardTileSpawner : MonoBehaviour
         // Create instance
         ChessPieceData pieceData = Instantiate(template);
         
+        // Get player settings from GameManagerChess
+        GameManagerChess gameManager = GameManagerChess.Instance;
+        
         // Set player-specific properties
         if (isPlayer1)
         {
-            pieceData.playerType = player1Color;
-            pieceData.selectedMaterialIndex = player1MaterialIndex;
+            if (gameManager != null)
+            {
+                pieceData.playerType = gameManager.player1Color;
+                pieceData.selectedMaterialIndex = gameManager.player1MaterialIndex;
+            }
+            else
+            {
+                // Fallback values if GameManagerChess is not available
+                pieceData.playerType = Color.white;
+                pieceData.selectedMaterialIndex = 0;
+            }
             pieceData.isWhite = true;
         }
         else
         {
-            pieceData.playerType = player2Color;
-            pieceData.selectedMaterialIndex = player2MaterialIndex;
+            if (gameManager != null)
+            {
+                pieceData.playerType = gameManager.player2Color;
+                pieceData.selectedMaterialIndex = gameManager.player2MaterialIndex;
+            }
+            else
+            {
+                // Fallback values if GameManagerChess is not available
+                pieceData.playerType = Color.black;
+                pieceData.selectedMaterialIndex = 1;
+            }
             pieceData.isWhite = false;
         }
         

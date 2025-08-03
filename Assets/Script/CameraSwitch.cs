@@ -7,10 +7,20 @@ public class CameraSwitch : MonoBehaviour
 {
     public GameObject[] mainCameras;
     public GameObject[] cardCameras;
-    public int player;
     public Camera camera1;
     public Camera camera2;
     public Camera currentCamera;
+    
+    // Player index is now managed by GameManagerChess
+    private int currentPlayerIndex
+    {
+        get
+        {
+            if (GameManagerChess.Instance != null)
+                return GameManagerChess.Instance.currentPlayerIndex;
+            return 0; // Default to player 0
+        }
+    }
     
     [Header("Card Integration")]
     public bool isInCardMode = false;
@@ -23,27 +33,40 @@ public class CameraSwitch : MonoBehaviour
         cardCameras = new GameObject[2];
         cardCameras[0] = GameObject.FindGameObjectWithTag("Player1Camera");
         cardCameras[1] = GameObject.FindGameObjectWithTag("Player2Camera");
-        if(player == 0)
+        
+        // Initialize cameras based on current player index from GameManagerChess
+        InitializeCameras();
+        
+        // Find targeting system
+        targetingSystem = FindObjectOfType<CardTargetingSystem>();
+    }
+    
+    private void InitializeCameras()
+    {
+        // Player index 0: use main camera index 0 and card camera index 0
+        // Player index 1: use main camera index 1 and card camera index 1
+        if(currentPlayerIndex == 0)
         {
-            camera1 = mainCameras[1].GetComponent<Camera>();
+            camera1 = mainCameras[0].GetComponent<Camera>();
             camera2 = cardCameras[0].GetComponent<Camera>();
-            mainCameras[0].GetComponent<Camera>().enabled = false;
-            cardCameras[1].GetComponent <Camera>().enabled = false;
+            
+            // Disable other player's cameras
+            if (mainCameras.Length > 1) mainCameras[1].GetComponent<Camera>().enabled = false;
+            if (cardCameras.Length > 1) cardCameras[1].GetComponent<Camera>().enabled = false;
         }
         else
         {
-            camera1 = mainCameras[0].GetComponent<Camera>();
+            camera1 = mainCameras[1].GetComponent<Camera>();
             camera2 = cardCameras[1].GetComponent<Camera>();
-            mainCameras[1].GetComponent<Camera>().enabled = false;
+            
+            // Disable other player's cameras
+            mainCameras[0].GetComponent<Camera>().enabled = false;
             cardCameras[0].GetComponent<Camera>().enabled = false;
         }
 
         camera1.enabled = true;
         currentCamera = camera1;
         camera2.enabled = false;
-        
-        // Find targeting system
-        targetingSystem = FindObjectOfType<CardTargetingSystem>();
     }
 
     // Update is called once per frame
@@ -128,7 +151,19 @@ public class CameraSwitch : MonoBehaviour
     
     public bool IsCurrentPlayersTurn()
     {
-        // Simple turn check - you might want to implement more sophisticated turn management
-        return true; // For now, always allow
+        // Always return true since this camera switch is automatically managed by GameManagerChess
+        return true;
     }
+    
+    /// <summary>
+    /// Set the current player and update camera accordingly
+    /// Called by GameManagerChess when turns change
+    /// </summary>
+    public void SetCurrentPlayer(int newPlayerIndex)
+    {
+        // Reinitialize cameras for the new current player
+        InitializeCameras();
+    }
+    
+
 }

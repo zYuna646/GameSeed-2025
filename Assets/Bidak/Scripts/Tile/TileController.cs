@@ -508,16 +508,16 @@ public class TileController : MonoBehaviour
     {
         GameObject targetBanner = null;
         
-        // Find the board spawner to get player color configuration
-        ChessBoardTileSpawner boardSpawner = FindObjectOfType<ChessBoardTileSpawner>();
+        // Get player color configuration from GameManagerChess
+        GameManagerChess gameManager = GameManagerChess.Instance;
         
         // Determine target banner based on player type
-        if (boardSpawner != null && pieceData.playerType == boardSpawner.player1Color)
+        if (gameManager != null && pieceData.playerType == gameManager.player1Color)
         {
             // Player 1 faces Banner2
             targetBanner = GameObject.FindWithTag("Banner2");
         }
-        else if (boardSpawner != null && pieceData.playerType == boardSpawner.player2Color)
+        else if (gameManager != null && pieceData.playerType == gameManager.player2Color)
         {
             // Player 2 faces Banner1
             targetBanner = GameObject.FindWithTag("Banner1");

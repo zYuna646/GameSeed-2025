@@ -735,7 +735,7 @@ GameObject:
   - component: {fileID: 626119715}
   m_Layer: 0
   m_Name: CameraManager
-  m_TagString: Player2Camera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -969,10 +969,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bee4ce73a05c88249b65895340535368, type: 2}
   - {fileID: 11400000, guid: 3befcc12e16960840b3be163a758a5d0, type: 2}
   - {fileID: 11400000, guid: d5147f6297860d14faebfe6ee3a75720, type: 2}
-  player1MaterialIndex: 0
-  player2MaterialIndex: 2
-  player1Color: {r: 1, g: 1, b: 1, a: 1}
-  player2Color: {r: 0, g: 0, b: 0, a: 1}
   tileWidth: 1
   tileLength: 1
   tileSeparation: 1
@@ -1061,6 +1057,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1013050348}
   - component: {fileID: 1013050347}
+  - component: {fileID: 1013050349}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1075,11 +1072,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1013050346}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 429e3685962c91245aefe9eacf4e1627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tileManager: {fileID: 0}
   _startingTime: 60
   _timerText: {fileID: 0}
 --- !u!4 &1013050348
@@ -1097,6 +1095,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1013050349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013050346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ff57afc3ee46846b0b71c7d9ed1381, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentPlayerIndex: 0
+  player1Name: Player 1
+  player2Name: Player 2
+  player1MaterialIndex: 0
+  player2MaterialIndex: 2
+  player1Color: {r: 1, g: 1, b: 1, a: 1}
+  player2Color: {r: 0, g: 0, b: 0, a: 1}
+  playerCameraSwitchers: []
+  turnCount: 1
+  turnTimer: 0
+  maxTurnTime: 30
+  enableTurnTimer: 0
+  autoSwitchTurns: 1
 --- !u!1 &1262955654
 GameObject:
   m_ObjectHideFlags: 0
