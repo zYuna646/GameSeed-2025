@@ -1080,8 +1080,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 429e3685962c91245aefe9eacf4e1627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startingTime: 60
-  _timerText: {fileID: 0}
+  tileManager: {fileID: 156833047}
+  _startingTime: 600
+  _timerText: {fileID: 342141429}
 --- !u!4 &1013050348
 Transform:
   m_ObjectHideFlags: 0
