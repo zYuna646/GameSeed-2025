@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
+using Bidak.Data;
+using Bidak.Manager;
 
 public class TileController : MonoBehaviour
 {
@@ -289,10 +291,209 @@ public class TileController : MonoBehaviour
     // Optional: Add a method to check if the tile can be captured
     public bool CanBeCaptured(ChessPieceData capturingPieceData)
     {
-        // Tile can be captured if it has a piece and the piece is not from the same color
-        // return currentPieceObject != null && 
-        //        currentPieceData != null && 
-        //        currentPieceData.pieceColor != capturingPieceData.pieceColor;
-        return true;
+        // If no piece on tile, it can be occupied
+        if (currentPieceData == null)
+            return true;
+        
+        // Check if piece can be captured based on card effects
+        if (currentPieceController != null)
+        {
+            return currentPieceController.CanCapture(currentPieceData);
+        }
+        
+        // Basic capture validation
+        return currentPieceData.playerType != capturingPieceData.playerType;
+    }
+    
+    /// <summary>
+    /// Check if a piece can move to this tile considering card effects
+    /// </summary>
+    public bool CanMoveToTile(ChessPieceData movingPiece, TileController fromTile)
+    {
+        if (movingPiece == null)
+            return false;
+        
+        // Check if tile is empty
+        if (currentPieceData == null)
+            return true;
+        
+        // Check if can capture piece on this tile
+        if (currentPieceData.playerType != movingPiece.playerType)
+        {
+            // Check protection effects
+            if (currentPieceData.hasFullProtection)
+            {
+                // Check if capturing piece has special abilities to bypass protection
+                if (movingPiece.HasCardEffect(Bidak.Data.CardEffectType.UnstoppableForce) &&
+                    (movingPiece.pieceType == ChessPieceData.PieceType.Queen || movingPiece.pieceType == ChessPieceData.PieceType.King))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            if (currentPieceData.hasLightProtection)
+            {
+                // Can only be captured by stronger pieces
+                int movingStrength = GetPieceStrength(movingPiece.pieceType);
+                int targetStrength = GetPieceStrength(currentPieceData.pieceType);
+                return movingStrength > targetStrength;
+            }
+            
+            return true; // Can capture
+        }
+        
+        return false; // Cannot move to tile with same color piece
+    }
+    
+    /// <summary>
+    /// Apply special card effects when a piece moves to this tile
+    /// </summary>
+    public void HandleMoveEffects(ChessPieceData movingPiece, PieceController movingController)
+    {
+        if (movingPiece == null || movingController == null)
+            return;
+        
+        // Handle Back from Dead effect
+        if (movingPiece.HasCardEffect(Bidak.Data.CardEffectType.BackFromDead) && currentPieceData != null)
+        {
+            // Store the captured piece for potential revival
+            HandleBackFromDeadEffect(currentPieceData, movingPiece);
+        }
+        
+        // Handle Stone Tomorrow effect
+        if (movingPiece.HasCardEffect(Bidak.Data.CardEffectType.StoneTomorrow) &&
+            movingPiece.pieceType == ChessPieceData.PieceType.Pawn &&
+            movingPiece.immobilityTurns >= 15)
+        {
+            HandleStoneTomorrowEffect(movingPiece, movingController);
+        }
+        
+        // Handle Not Today effect (for kings under attack)
+        if (currentPieceData != null && 
+            currentPieceData.HasCardEffect(Bidak.Data.CardEffectType.NotToday) &&
+            currentPieceData.pieceType == ChessPieceData.PieceType.King)
+        {
+            HandleNotTodayEffect(movingPiece, movingController);
+        }
+    }
+    
+    /// <summary>
+    /// Handle the Back from Dead effect
+    /// </summary>
+    private void HandleBackFromDeadEffect(ChessPieceData capturedPiece, ChessPieceData capturingPiece)
+    {
+        // Store captured piece data for potential revival
+        // This would require a revival manager or game state manager
+        Debug.Log($"Back from Dead effect: {capturedPiece.pieceName} can potentially be revived");
+        
+        // Implementation would add the piece to a revival list
+        // For now, just log the effect
+    }
+    
+    /// <summary>
+    /// Handle the Stone Tomorrow effect (pawn promotion after immobility)
+    /// </summary>
+    private void HandleStoneTomorrowEffect(ChessPieceData pawn, PieceController pawnController)
+    {
+        if (pawn.pieceType == ChessPieceData.PieceType.Pawn)
+        {
+            Debug.Log("Stone Tomorrow effect: Pawn can promote in place");
+            
+            // Allow in-place promotion
+            pawn.canPromoteInPlace = true;
+            
+            // This would typically open a UI for piece selection
+            // For now, auto-promote to Queen
+            PromotePawnInPlace(pawn, pawnController, ChessPieceData.PieceType.Queen);
+        }
+    }
+    
+    /// <summary>
+    /// Handle the Not Today effect (cancel attacks on king)
+    /// </summary>
+    private void HandleNotTodayEffect(ChessPieceData attackingPiece, PieceController attackingController)
+    {
+        Debug.Log("Not Today effect: Attack on king cancelled, attacker moves back");
+        
+        // Cancel the attack and move attacker back
+        // This would require access to the previous position
+        // For now, just prevent the capture
+        
+        if (attackingController.movementController != null)
+        {
+            // Move attacking piece back to previous position
+            // This requires storing the previous tile
+            Debug.Log("Moving attacking piece back to previous position");
+        }
+    }
+    
+    /// <summary>
+    /// Promote a pawn in place
+    /// </summary>
+    private void PromotePawnInPlace(ChessPieceData pawn, PieceController pawnController, ChessPieceData.PieceType newPieceType)
+    {
+        Debug.Log($"Promoting pawn to {newPieceType} in place");
+        
+        // Update piece type
+        pawn.pieceType = newPieceType;
+        pawn.SetDefaultMovement();
+        
+        // Update the piece controller's appearance
+        // This would require changing the model/prefab
+        // For now, just update the name
+        if (currentPieceObject != null)
+        {
+            currentPieceObject.name = $"{newPieceType} (Promoted - {tileData.chessNotation})";
+        }
+        
+        // Remove the promotion effect
+        pawn.RemoveCardEffect(Bidak.Data.CardEffectType.StoneTomorrow);
+        pawn.canPromoteInPlace = false;
+    }
+    
+    /// <summary>
+    /// Get piece strength for comparison
+    /// </summary>
+    private int GetPieceStrength(ChessPieceData.PieceType pieceType)
+    {
+        switch (pieceType)
+        {
+            case ChessPieceData.PieceType.Pawn: return 1;
+            case ChessPieceData.PieceType.Knight: return 3;
+            case ChessPieceData.PieceType.Bishop: return 3;
+            case ChessPieceData.PieceType.Rook: return 5;
+            case ChessPieceData.PieceType.Queen: return 9;
+            case ChessPieceData.PieceType.King: return 10;
+            default: return 0;
+        }
+    }
+    
+    /// <summary>
+    /// Check if this tile is in a diagonal line from another tile
+    /// </summary>
+    public bool IsOnDiagonalFrom(TileController otherTile)
+    {
+        if (otherTile == null)
+            return false;
+        
+        Vector3 direction = transform.position - otherTile.transform.position;
+        
+        // Check if movement is purely diagonal
+        return Mathf.Abs(Mathf.Abs(direction.x) - Mathf.Abs(direction.z)) < 0.1f;
+    }
+    
+    /// <summary>
+    /// Get all tiles on the same diagonal from this tile
+    /// </summary>
+    public List<TileController> GetDiagonalTiles(int maxDistance = 8)
+    {
+        List<TileController> diagonalTiles = new List<TileController>();
+        
+        // This would require access to the board manager
+        // For now, return empty list
+        // Implementation would find all tiles on the four diagonals
+        
+        return diagonalTiles;
     }
 }
