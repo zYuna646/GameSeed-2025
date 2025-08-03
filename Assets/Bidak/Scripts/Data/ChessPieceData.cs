@@ -37,6 +37,8 @@ public class ChessPieceData : ScriptableObject
     [Header("State")]
     public bool isDead = false;
 
+    public bool isWhite = true;
+
     [Header("Animations")]
     // Idle Animation
     public AnimationClip idleAnimation;
@@ -117,6 +119,33 @@ public class ChessPieceData : ScriptableObject
     public Color deathEffectColor = Color.white;
     public float deathEffectDuration = 1f;
     public float deathEffectIntensity = 1f;
+
+    [Header("Card Effects")]
+    public List<Bidak.Data.CardEffectData> appliedEffects = new List<Bidak.Data.CardEffectData>();
+    
+    [Header("Enhanced Movement Capabilities")]
+    public bool canMoveMultipleTimes = false;
+    public int remainingMoves = 1;
+    public bool canAttackDiagonally = false;
+    public bool canMoveBackward = false;
+    public bool canMoveSideways = false;
+    
+    [Header("Protection Status")]
+    public bool hasLightProtection = false;
+    public bool hasFullProtection = false;
+    public int protectionTurnsRemaining = 0;
+    public bool isBlockaded = false;
+    public int blockadeTurnsRemaining = 0;
+    
+    [Header("Special Abilities")]
+    public bool canPromoteInPlace = false;
+    public bool canRevive = false;
+    public bool canIgnoreBlocking = false;
+    public int immobilityTurns = 0; // For tracking how long piece hasn't moved
+    
+    [Header("Turn Tracking")]
+    public int lastMoveTurn = -1;
+    public int turnsWithoutMoving = 0;
 
     // Enum to define different chess piece types
     public enum PieceType
@@ -264,5 +293,244 @@ public class ChessPieceData : ScriptableObject
         deathEffectColor = color ?? Color.white;
         deathEffectDuration = duration;
         deathEffectIntensity = intensity;
+    }
+
+    // Card Effect Management Methods
+    
+    /// <summary>
+    /// Apply a card effect to this piece
+    /// </summary>
+    public void ApplyCardEffect(Bidak.Data.CardEffectData effectData)
+    {
+        if (effectData == null || !effectData.isEnabled)
+            return;
+            
+        // Add to applied effects
+        appliedEffects.Add(effectData.Clone());
+        
+        // Apply the specific effect based on type
+        ApplySpecificEffect(effectData);
+    }
+    
+    /// <summary>
+    /// Remove a specific card effect
+    /// </summary>
+    public void RemoveCardEffect(Bidak.Data.CardEffectType effectType)
+    {
+        appliedEffects.RemoveAll(effect => effect.effectType == effectType);
+        RemoveSpecificEffect(effectType);
+    }
+    
+    /// <summary>
+    /// Update all active card effects (called each turn)
+    /// </summary>
+    public void UpdateCardEffects(int currentTurn)
+    {
+        lastMoveTurn = currentTurn;
+        
+        // Update turn-based effects
+        for (int i = appliedEffects.Count - 1; i >= 0; i--)
+        {
+            var effect = appliedEffects[i];
+            
+            // Decrease duration if it's turn-based
+            if (effect.parameters.turnDuration > 0)
+            {
+                effect.parameters.turnDuration--;
+                if (effect.parameters.turnDuration <= 0)
+                {
+                    RemoveCardEffect(effect.effectType);
+                }
+            }
+        }
+        
+        // Update protection timers
+        if (protectionTurnsRemaining > 0)
+        {
+            protectionTurnsRemaining--;
+            if (protectionTurnsRemaining <= 0)
+            {
+                hasLightProtection = false;
+                hasFullProtection = false;
+            }
+        }
+        
+        // Update blockade timers
+        if (blockadeTurnsRemaining > 0)
+        {
+            blockadeTurnsRemaining--;
+            if (blockadeTurnsRemaining <= 0)
+            {
+                isBlockaded = false;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Check if piece has a specific card effect active
+    /// </summary>
+    public bool HasCardEffect(Bidak.Data.CardEffectType effectType)
+    {
+        return appliedEffects.Exists(effect => effect.effectType == effectType);
+    }
+    
+    /// <summary>
+    /// Get parameters for a specific card effect
+    /// </summary>
+    public Bidak.Data.CardEffectParameters GetEffectParameters(Bidak.Data.CardEffectType effectType)
+    {
+        var effect = appliedEffects.Find(e => e.effectType == effectType);
+        return effect?.parameters;
+    }
+    
+    /// <summary>
+    /// Reset movement for a new turn
+    /// </summary>
+    public void ResetMovementForTurn()
+    {
+        if (canMoveMultipleTimes)
+        {
+            // Reset remaining moves based on active effects
+            remainingMoves = 1; // Default
+            
+            if (HasCardEffect(Bidak.Data.CardEffectType.DoubleMove))
+                remainingMoves = 2;
+            else if (HasCardEffect(Bidak.Data.CardEffectType.TripleMove))
+                remainingMoves = 3;
+        }
+        else
+        {
+            remainingMoves = 1;
+        }
+    }
+    
+    /// <summary>
+    /// Use one move
+    /// </summary>
+    public void UseMove()
+    {
+        if (remainingMoves > 0)
+        {
+            remainingMoves--;
+            turnsWithoutMoving = 0;
+        }
+    }
+    
+    /// <summary>
+    /// Check if piece can move this turn
+    /// </summary>
+    public bool CanMoveThisTurn()
+    {
+        return remainingMoves > 0 && !isBlockaded;
+    }
+    
+    private void ApplySpecificEffect(Bidak.Data.CardEffectData effectData)
+    {
+        switch (effectData.effectType)
+        {
+            case Bidak.Data.CardEffectType.DoubleMove:
+                canMoveMultipleTimes = true;
+                remainingMoves = 2;
+                break;
+                
+            case Bidak.Data.CardEffectType.TripleMove:
+                canMoveMultipleTimes = true;
+                remainingMoves = 3;
+                break;
+                
+            case Bidak.Data.CardEffectType.DiagonalAttack:
+                canAttackDiagonally = true;
+                break;
+                
+            case Bidak.Data.CardEffectType.StraightMove:
+                // Special logic for straight moves without attack
+                break;
+                
+            case Bidak.Data.CardEffectType.ProtectedRing:
+                hasLightProtection = true;
+                protectionTurnsRemaining = effectData.parameters.protectionDuration;
+                break;
+                
+            case Bidak.Data.CardEffectType.BlockadeMove:
+                isBlockaded = true;
+                blockadeTurnsRemaining = 2;
+                break;
+                
+            case Bidak.Data.CardEffectType.ForwardTwoMoves:
+                canMoveBackward = true;
+                break;
+                
+            case Bidak.Data.CardEffectType.PowerfulMove:
+                canIgnoreBlocking = true;
+                break;
+                
+            case Bidak.Data.CardEffectType.BackMove:
+                canRevive = true;
+                break;
+                
+            case Bidak.Data.CardEffectType.LeapMove:
+                canMoveSideways = true;
+                break;
+                
+            case Bidak.Data.CardEffectType.RestoreMove:
+                canMoveSideways = true;
+                break;
+                
+            case Bidak.Data.CardEffectType.NotToday:
+                hasFullProtection = true;
+                protectionTurnsRemaining = 1;
+                break;
+                
+            case Bidak.Data.CardEffectType.UnstoppableForce:
+                hasFullProtection = true;
+                protectionTurnsRemaining = 2;
+                break;
+        }
+    }
+    
+    private void RemoveSpecificEffect(Bidak.Data.CardEffectType effectType)
+    {
+        switch (effectType)
+        {
+            case Bidak.Data.CardEffectType.DoubleMove:
+            case Bidak.Data.CardEffectType.TripleMove:
+                canMoveMultipleTimes = false;
+                remainingMoves = 1;
+                break;
+                
+            case Bidak.Data.CardEffectType.DiagonalAttack:
+                canAttackDiagonally = false;
+                break;
+                
+            case Bidak.Data.CardEffectType.ProtectedRing:
+                hasLightProtection = false;
+                break;
+                
+            case Bidak.Data.CardEffectType.BlockadeMove:
+                isBlockaded = false;
+                break;
+                
+            case Bidak.Data.CardEffectType.ForwardTwoMoves:
+                canMoveBackward = false;
+                break;
+                
+            case Bidak.Data.CardEffectType.PowerfulMove:
+                canIgnoreBlocking = false;
+                break;
+                
+            case Bidak.Data.CardEffectType.BackMove:
+                canRevive = false;
+                break;
+                
+            case Bidak.Data.CardEffectType.LeapMove:
+            case Bidak.Data.CardEffectType.RestoreMove:
+                canMoveSideways = false;
+                break;
+                
+            case Bidak.Data.CardEffectType.NotToday:
+            case Bidak.Data.CardEffectType.UnstoppableForce:
+                hasFullProtection = false;
+                break;
+        }
     }
 }

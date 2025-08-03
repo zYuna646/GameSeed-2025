@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea041d47182a524496c727b1edf4107, type: 3}
+  m_Name: NiceDayToWalk
+  m_EditorClassIdentifier: 
+  cardName: a nice day to walk
+  cardImage: {fileID: 0}
+  points: 0
+  cardPrefab: {fileID: 4946194189688133527, guid: 7eeefbe3f15b85b46aed06080ef77daa, type: 3}
+  type: 0
+  rank: 2
+  pieceType: 4
+  cardMaterial: {fileID: 2100000, guid: 3fa5862822c4be64e97613887f6b428f, type: 2}
+  description: Ratu dapat bergerak dua kali dalam satu giliran jika tidak menyerang
+    di langkah pertama. Cocok untuk positioning atau mengecoh lawan. Kartu ini dapat
+    digunakan 2 kali.
+  cardEffects:
+  - effectType: 9
+    isEnabled: 1
+    parameters:
+      moveCount: 2
+      turnDuration: 2
+      stepsForward: 1
+      stepsBackward: 1
+      turnsCooldown: 0
+      canAttackDiagonally: 0
+      canAttackStraight: 0
+      attackRange: 1
+      ignoreBlocking: 0
+      hasLightProtection: 0
+      hasFullProtection: 0
+      protectionDuration: 1
+      canPromoteInPlace: 0
+      canRevive: 0
+      canMoveBackward: 0
+      canMoveSideways: 0
+      requiresNoAttack: 1
+      canSwapPositions: 0
+      isBlockaded: 0
+      turnsWithoutMoving: 0
+      affectsMultiplePieces: 0
+      affectsAlliedPieces: 0
+      affectsEnemyPieces: 0
+      maxTargets: 1
+    effectDescription: 

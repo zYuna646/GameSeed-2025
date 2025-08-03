@@ -1,6 +1,5 @@
 using UnityEngine;
-
-// Add this using directive
+using System.Collections.Generic;
 using System.Linq;
 
 public class ChessBoardTileSpawner : MonoBehaviour
@@ -12,6 +11,15 @@ public class ChessBoardTileSpawner : MonoBehaviour
     [Header("Tile Configuration")]
     public BoardTileData whiteTileData;
     public BoardTileData blackTileData;
+    
+    [Header("Piece Configuration")]
+    public List<ChessPieceData> pieceTemplates = new List<ChessPieceData>();
+    
+    [Header("Player Material Settings")]
+    public int player1MaterialIndex = 0;
+    public int player2MaterialIndex = 1;
+    public Color player1Color = Color.white;
+    public Color player2Color = Color.black;
 
     [Header("Tile Spacing")]
     public float tileWidth = 1f;
@@ -81,26 +89,15 @@ public class ChessBoardTileSpawner : MonoBehaviour
                 spawnedTileData.tilePrefab = tileData.tilePrefab;
 
                 // Add TileController
-                var tileControllerType = System.Type.GetType("TileController");
-                if (tileControllerType != null)
+                TileController tileController = tile.AddComponent<TileController>();
+                tileController.SetTileData(spawnedTileData);
+                tileController.SetTileOffset(tileOffset, horizontalSpread, verticalSpread);
+                
+                // Setup chess piece for this tile
+                ChessPieceData pieceToSpawn = GetPieceForTile(notation);
+                if (pieceToSpawn != null)
                 {
-                    var controller = tile.AddComponent(tileControllerType);
-                    var setDataMethod = tileControllerType.GetMethod("SetTileData");
-                    var setOffsetMethod = tileControllerType.GetMethod("SetTileOffset");
-                    
-                    if (setDataMethod != null)
-                    {
-                        setDataMethod.Invoke(controller, new object[] { spawnedTileData });
-                    }
-
-                    if (setOffsetMethod != null)
-                    {
-                        setOffsetMethod.Invoke(controller, new object[] { 
-                            tileOffset, 
-                            horizontalSpread, 
-                            verticalSpread 
-                        });
-                    }
+                    tileController.currentPieceData = pieceToSpawn;
                 }
 
                 // Add notation text if enabled
@@ -182,6 +179,114 @@ public class ChessBoardTileSpawner : MonoBehaviour
         tileLength = newTileLength;
         tileSeparation = newSeparation;
         SpawnBoard();
+    }
+
+    /// <summary>
+    /// Get the appropriate chess piece for a given tile notation
+    /// </summary>
+    private ChessPieceData GetPieceForTile(string notation)
+    {
+        if (pieceTemplates == null || pieceTemplates.Count == 0)
+            return null;
+            
+        // Parse notation (e.g., "A1", "B2", etc.)
+        char column = notation[0];
+        int row = int.Parse(notation.Substring(1));
+        
+        ChessPieceData.PieceType pieceType;
+        bool isPlayer1; // true for player 1 (white), false for player 2 (black)
+        
+        // Determine piece type and player based on standard chess layout
+        if (row == 2) // White pawns
+        {
+            pieceType = ChessPieceData.PieceType.Pawn;
+            isPlayer1 = true;
+        }
+        else if (row == 7) // Black pawns
+        {
+            pieceType = ChessPieceData.PieceType.Pawn;
+            isPlayer1 = false;
+        }
+        else if (row == 1) // White back row
+        {
+            isPlayer1 = true;
+            pieceType = GetBackRowPieceType(column);
+        }
+        else if (row == 8) // Black back row
+        {
+            isPlayer1 = false;
+            pieceType = GetBackRowPieceType(column);
+        }
+        else
+        {
+            // Empty tile
+            return null;
+        }
+        
+        // Find template for this piece type
+        ChessPieceData template = pieceTemplates.Find(p => p.pieceType == pieceType);
+        if (template == null)
+        {
+            Debug.LogWarning($"No template found for piece type: {pieceType}");
+            return null;
+        }
+        
+        // Create instance with proper material and player settings
+        return CreatePieceDataInstance(template, isPlayer1, notation);
+    }
+    
+    /// <summary>
+    /// Get piece type for back row based on column
+    /// </summary>
+    private ChessPieceData.PieceType GetBackRowPieceType(char column)
+    {
+        switch (column)
+        {
+            case 'A':
+            case 'H':
+                return ChessPieceData.PieceType.Rook;
+            case 'B':
+            case 'G':
+                return ChessPieceData.PieceType.Knight;
+            case 'C':
+            case 'F':
+                return ChessPieceData.PieceType.Bishop;
+            case 'D':
+                return ChessPieceData.PieceType.Queen;
+            case 'E':
+                return ChessPieceData.PieceType.King;
+            default:
+                return ChessPieceData.PieceType.Pawn;
+        }
+    }
+    
+    /// <summary>
+    /// Create a piece data instance with proper material and player settings
+    /// </summary>
+    private ChessPieceData CreatePieceDataInstance(ChessPieceData template, bool isPlayer1, string notation)
+    {
+        // Create instance
+        ChessPieceData pieceData = Instantiate(template);
+        
+        // Set player-specific properties
+        if (isPlayer1)
+        {
+            pieceData.playerType = player1Color;
+            pieceData.selectedMaterialIndex = player1MaterialIndex;
+            pieceData.isWhite = true;
+        }
+        else
+        {
+            pieceData.playerType = player2Color;
+            pieceData.selectedMaterialIndex = player2MaterialIndex;
+            pieceData.isWhite = false;
+        }
+        
+        // Set position data
+        pieceData.currentTileNotation = notation;
+        pieceData.SetDefaultMovement();
+        
+        return pieceData;
     }
 
     // Editor support for manual respawning

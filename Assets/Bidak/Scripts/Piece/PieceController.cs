@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic; // Added for List
+using Bidak.Data;
+using Bidak.Manager;
 
 public class PieceController : MonoBehaviour
 {
@@ -220,6 +222,276 @@ public class PieceController : MonoBehaviour
         {
             pieceData.selectedMaterialIndex = index;
             UpdatePieceAppearance();
+        }
+    }
+
+    // Card Effect Methods
+    
+    /// <summary>
+    /// Apply a card effect to this piece
+    /// </summary>
+    public bool ApplyCardEffect(ChessCardData cardData)
+    {
+        if (cardData == null || pieceData == null)
+        {
+            Debug.LogWarning("Cannot apply card effect: missing card data or piece data");
+            return false;
+        }
+        
+        return CardEffectManager.Instance.ApplyCardEffect(cardData, pieceData, this);
+    }
+    
+    /// <summary>
+    /// Apply a specific effect to this piece
+    /// </summary>
+    public bool ApplyEffect(Bidak.Data.CardEffectData effectData)
+    {
+        if (effectData == null || pieceData == null)
+        {
+            Debug.LogWarning("Cannot apply effect: missing effect data or piece data");
+            return false;
+        }
+        
+        return CardEffectManager.Instance.ApplyEffect(effectData, pieceData, this);
+    }
+    
+    /// <summary>
+    /// Remove a specific card effect from this piece
+    /// </summary>
+    public void RemoveCardEffect(Bidak.Data.CardEffectType effectType)
+    {
+        if (pieceData != null)
+        {
+            CardEffectManager.Instance.RemoveEffect(effectType, pieceData);
+        }
+    }
+    
+    /// <summary>
+    /// Check if this piece has a specific card effect
+    /// </summary>
+    public bool HasCardEffect(Bidak.Data.CardEffectType effectType)
+    {
+        return pieceData != null && pieceData.HasCardEffect(effectType);
+    }
+    
+    /// <summary>
+    /// Get all active card effects on this piece
+    /// </summary>
+    public List<CardEffectManager.ActiveCardEffect> GetActiveCardEffects()
+    {
+        if (pieceData == null)
+            return new List<CardEffectManager.ActiveCardEffect>();
+            
+        return CardEffectManager.Instance.GetActiveEffectsForPiece(pieceData);
+    }
+    
+    /// <summary>
+    /// Reset movement for new turn (considering card effects)
+    /// </summary>
+    public void StartNewTurn()
+    {
+        if (pieceData != null)
+        {
+            pieceData.ResetMovementForTurn();
+            
+            // Increment turns without moving if piece didn't move last turn
+            if (pieceData.remainingMoves == (pieceData.canMoveMultipleTimes ? 
+                (pieceData.HasCardEffect(Bidak.Data.CardEffectType.TripleMove) ? 3 : 2) : 1))
+            {
+                pieceData.turnsWithoutMoving++;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Execute a move and handle card effect logic
+    /// </summary>
+    public bool TryMove(TileController targetTile)
+    {
+        if (pieceData == null || !pieceData.CanMoveThisTurn())
+        {
+            Debug.LogWarning("Cannot move: piece is not allowed to move this turn");
+            return false;
+        }
+        
+        // Check special movement restrictions from card effects
+        if (pieceData.isBlockaded)
+        {
+            Debug.LogWarning("Cannot move: piece is blockaded");
+            return false;
+        }
+        
+        // Validate move based on card effects
+        if (!ValidateMoveWithCardEffects(targetTile))
+        {
+            Debug.LogWarning("Move is not valid with current card effects");
+            return false;
+        }
+        
+        // Execute the move through movement controller
+        if (movementController != null)
+        {
+            movementController.SetDestinationTile(targetTile);
+            
+            // Use one move
+            pieceData.UseMove();
+            
+            // Handle special effects after move
+            HandlePostMoveEffects(targetTile);
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /// <summary>
+    /// Validate if a move is allowed based on active card effects
+    /// </summary>
+    private bool ValidateMoveWithCardEffects(TileController targetTile)
+    {
+        if (pieceData == null || targetTile == null)
+            return false;
+        
+        // Get current tile
+        TileController currentTile = movementController?.currentTile;
+        if (currentTile == null)
+            return false;
+        
+        Vector3 currentPos = currentTile.transform.position;
+        Vector3 targetPos = targetTile.transform.position;
+        Vector3 direction = targetPos - currentPos;
+        
+        // Check backward movement
+        if (pieceData.canMoveBackward)
+        {
+            // Allow backward moves if effect is active
+        }
+        
+        // Check sideways movement
+        if (pieceData.canMoveSideways)
+        {
+            // Allow sideways moves if effect is active
+            if (Mathf.Abs(direction.x) > 0 && Mathf.Abs(direction.z) < 0.1f)
+            {
+                return true; // Pure sideways move
+            }
+        }
+        
+        // Check diagonal attack capability
+        if (pieceData.canAttackDiagonally && targetTile.currentPieceData != null)
+        {
+            // Allow diagonal attacks if effect is active
+            if (Mathf.Abs(direction.x) > 0 && Mathf.Abs(direction.z) > 0)
+            {
+                return true; // Diagonal attack
+            }
+        }
+        
+        // Add more validation based on piece type and effects
+        return ValidateBasicMove(currentTile, targetTile);
+    }
+    
+    /// <summary>
+    /// Basic move validation (can be extended)
+    /// </summary>
+    private bool ValidateBasicMove(TileController currentTile, TileController targetTile)
+    {
+        // Basic validation logic
+        // This should be expanded with proper chess move validation
+        return true;
+    }
+    
+    /// <summary>
+    /// Handle effects that trigger after a move
+    /// </summary>
+    private void HandlePostMoveEffects(TileController targetTile)
+    {
+        if (pieceData == null)
+            return;
+        
+        // Handle Queen Collision effect
+        if (pieceData.HasCardEffect(Bidak.Data.CardEffectType.QueenCollision) && 
+            pieceData.pieceType == ChessPieceData.PieceType.Bishop &&
+            targetTile.currentPieceData != null)
+        {
+            HandleQueenCollisionEffect(targetTile);
+        }
+        
+        // Handle Dance Like Queen effect
+        if (pieceData.HasCardEffect(Bidak.Data.CardEffectType.DanceLikeQueen) &&
+            pieceData.pieceType == ChessPieceData.PieceType.Bishop &&
+            targetTile.currentPieceData != null)
+        {
+            // Allow next move to be in straight line like queen
+            pieceData.canMoveMultipleTimes = true;
+            pieceData.remainingMoves = 1;
+        }
+        
+        // Handle Nice Day effect (Queen can move twice if no attack)
+        if (pieceData.HasCardEffect(Bidak.Data.CardEffectType.NiceDay) &&
+            pieceData.pieceType == ChessPieceData.PieceType.Queen &&
+            targetTile.currentPieceData == null)
+        {
+            // Allow second move if first was not an attack
+            if (pieceData.remainingMoves == 0)
+            {
+                pieceData.remainingMoves = 1;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Handle Queen Collision effect (destroy diagonal pieces)
+    /// </summary>
+    private void HandleQueenCollisionEffect(TileController capturedTile)
+    {
+        // Find and destroy pieces on the same diagonal
+        // This is a simplified implementation
+        Debug.Log("Queen Collision effect triggered - should destroy diagonal pieces");
+        
+        // Implementation would find diagonal pieces and capture them
+        // This requires access to the board manager to find diagonal tiles
+    }
+    
+    /// <summary>
+    /// Check if this piece can capture another piece
+    /// </summary>
+    public bool CanCapture(ChessPieceData targetPiece)
+    {
+        if (pieceData == null || targetPiece == null)
+            return false;
+        
+        // Check protection effects
+        if (targetPiece.hasFullProtection)
+        {
+            return false;
+        }
+        
+        if (targetPiece.hasLightProtection)
+        {
+            // Can only be captured by stronger pieces
+            return GetPieceStrength(pieceData.pieceType) > GetPieceStrength(targetPiece.pieceType);
+        }
+        
+        // Check if different players
+        return pieceData.playerType != targetPiece.playerType;
+    }
+    
+    /// <summary>
+    /// Get piece strength for protection comparison
+    /// </summary>
+    private int GetPieceStrength(ChessPieceData.PieceType pieceType)
+    {
+        switch (pieceType)
+        {
+            case ChessPieceData.PieceType.Pawn: return 1;
+            case ChessPieceData.PieceType.Knight: return 3;
+            case ChessPieceData.PieceType.Bishop: return 3;
+            case ChessPieceData.PieceType.Rook: return 5;
+            case ChessPieceData.PieceType.Queen: return 9;
+            case ChessPieceData.PieceType.King: return 10;
+            default: return 0;
         }
     }
 }
