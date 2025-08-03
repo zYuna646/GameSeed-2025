@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pieceName: Rook
   pieceType: 1
-  pieceColor: {r: 0, g: 0, b: 0, a: 0}
+  playerType: {r: 1, g: 1, b: 1, a: 1}
+  availableMaterials: []
+  selectedMaterialIndex: 0
   modelPrefab: {fileID: 134188, guid: 085e0a36dd6a6af46abfd3c3ffcdca3f, type: 3}
   icon: {fileID: 0}
   startPosition: {x: 0, y: 0, z: 0}
@@ -23,5 +25,86 @@ MonoBehaviour:
   points: 5
   canCastle: 0
   canEnPassant: 0
-  isFirstMove: 1
+  isFirstMove: 0
   isDead: 0
+  idleAnimation: {fileID: 7400000, guid: ed5efca8bebba864d9f5d5b20196c94b, type: 3}
+  idleAnimationSpeed: 1
+  idleAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  moveAnimation: {fileID: 7400000, guid: 39c5a1e19d6559345aa3c57adb589874, type: 3}
+  moveAnimationSpeed: 1
+  moveAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spawnAnimation: {fileID: 7400000, guid: ed5efca8bebba864d9f5d5b20196c94b, type: 3}
+  spawnAnimationSpeed: 1
+  spawnAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  capturingAnimation: {fileID: 7400000, guid: f4554a6188f8a9147954e4d6c388d287, type: 3}
+  capturingAnimationSpeed: 1
+  capturingAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  capturedAnimation: {fileID: 7400000, guid: 59ea70e74b23bed4683e8312494014aa, type: 3}
+  capturedAnimationSpeed: 1
+  capturedAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  deathAnimation: {fileID: 7400000, guid: d21976f6430d38b4d89737bfbf9c936f, type: 3}
+  deathAnimationSpeed: 1
+  deathAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  castleAnimation: {fileID: 0}
+  enPassantAnimation: {fileID: 0}
+  spawnEffectPrefab: {fileID: 7761031033666763820, guid: 1eb833340b41fb444b576c4dced8d4dc, type: 3}
+  spawnEffectColor: {r: 0.87058824, g: 0.6862745, b: 0.24313726, a: 1}
+  spawnEffectDuration: 1
+  spawnEffectIntensity: 1
+  moveEffectPrefab: {fileID: 8230022441722461589, guid: 41494896fc96c9748b81d3356632794e, type: 3}
+  moveEffectColor: {r: 0.8117647, g: 0.5294118, b: 0.19607843, a: 1}
+  moveEffectDuration: 0.5
+  moveEffectIntensity: 1
+  loopMoveEffect: 1
+  moveEffectScale: {x: 0.2, y: 0.2, z: 0.2}
+  moveSoundEffect: {fileID: 8300000, guid: df7087e4d8a8bb546bc08ce68632903f, type: 3}
+  moveSoundVolume: 1
+  captureSoundEffect: {fileID: 0}
+  captureSoundVolume: 1
+  spawnSoundEffect: {fileID: 8300000, guid: 5c7b6d4002009e842bd2621585546d19, type: 3}
+  spawnSoundVolume: 1
+  spawnSoundDelay: 1
+  deathSoundEffect: {fileID: 0}
+  deathSoundVolume: 1
+  capturingEffectPrefab: {fileID: 0}
+  capturingEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturingEffectDuration: 0.5
+  capturingEffectIntensity: 1
+  capturedEffectPrefab: {fileID: 0}
+  capturedEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  capturedEffectDuration: 0.5
+  capturedEffectIntensity: 1
+  deathEffectPrefab: {fileID: 0}
+  deathEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  deathEffectDuration: 1
+  deathEffectIntensity: 1
