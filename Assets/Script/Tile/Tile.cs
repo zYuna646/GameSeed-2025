@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Bidak.Manager;
 using Bidak.Data;
+using Bidak.Card;
 
 public class Tile : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class Tile : MonoBehaviour
     public GameObject floatingCardPrefab;
     
     private CardTargetingSystem cardTargetingSystem;
+    private CardEffectProcessor cardEffectProcessor;
     private bool isCardTarget = false;
     private bool isValidCardTarget = false;
     private GameObject floatingCardInstance;
@@ -46,6 +48,7 @@ public class Tile : MonoBehaviour
         MeshRenderer = GetTileSelectRenderer();
         tileController = GetComponent<TileController>();
         cardTargetingSystem = FindObjectOfType<CardTargetingSystem>();
+        cardEffectProcessor = FindObjectOfType<CardEffectProcessor>();
         
         originColor = MeshRenderer.material.color;
         
@@ -292,6 +295,13 @@ public class Tile : MonoBehaviour
         // Get player index of the card
         int cardPlayerIndex = cardTargetingSystem.selectedCard.playerIndex;
         
+        // Use CardEffectProcessor for sophisticated targeting validation
+        if (cardEffectProcessor != null)
+        {
+            return cardEffectProcessor.CanTargetPieceWithCard(piece, cardData, cardPlayerIndex);
+        }
+        
+        // Fallback to basic validation
         foreach (var effect in cardData.cardEffects)
         {
             // Check if effect affects allied or enemy pieces
@@ -493,12 +503,23 @@ public class Tile : MonoBehaviour
             return;
             
         var cardData = cardTargetingSystem.selectedCard.cardData;
+        var selectedCard = cardTargetingSystem.selectedCard;
         PieceController piece = GetPieceOnTile();
         
         if (piece != null)
         {
-            // Apply effect to piece
-            bool success = piece.ApplyCardEffect(cardData);
+            // Use CardEffectProcessor to apply effect
+            bool success = false;
+            
+            if (cardEffectProcessor != null)
+            {
+                success = cardEffectProcessor.ApplyCardEffectToPiece(cardData, piece, selectedCard.playerIndex);
+            }
+            else
+            {
+                // Fallback: Apply effect directly to piece
+                success = piece.ApplyCardEffect(cardData);
+            }
             
             if (success)
             {
@@ -506,6 +527,10 @@ public class Tile : MonoBehaviour
                 
                 // Trigger visual effect
                 StartCoroutine(ShowEffectApplication());
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to apply card effect {cardData.cardName} to piece {piece.name} on tile {name}");
             }
         }
         else if (CanTargetEmptyTile(cardData))

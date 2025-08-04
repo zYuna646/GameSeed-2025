@@ -245,6 +245,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c04b244e54c71c4ab5a9fab04986d1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPreviewPrefab: {fileID: 0}
+  cardPreviewHeight: 2
   goTo: {fileID: 0}
   kiri: {fileID: 0}
   kanan: {fileID: 0}
@@ -735,7 +737,7 @@ GameObject:
   - component: {fileID: 626119715}
   m_Layer: 0
   m_Name: CameraManager
-  m_TagString: Player2Camera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -758,7 +760,6 @@ MonoBehaviour:
   cardCameras:
   - {fileID: 1262955654}
   - {fileID: 1867783534}
-  player: 0
   camera1: {fileID: 0}
   camera2: {fileID: 0}
   currentCamera: {fileID: 0}
@@ -969,10 +970,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bee4ce73a05c88249b65895340535368, type: 2}
   - {fileID: 11400000, guid: 3befcc12e16960840b3be163a758a5d0, type: 2}
   - {fileID: 11400000, guid: d5147f6297860d14faebfe6ee3a75720, type: 2}
-  player1MaterialIndex: 0
-  player2MaterialIndex: 2
-  player1Color: {r: 1, g: 1, b: 1, a: 1}
-  player2Color: {r: 0, g: 0, b: 0, a: 1}
   tileWidth: 1
   tileLength: 1
   tileSeparation: 1
@@ -1061,6 +1058,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1013050348}
   - component: {fileID: 1013050347}
+  - component: {fileID: 1013050349}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1075,14 +1073,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1013050346}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 429e3685962c91245aefe9eacf4e1627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileManager: {fileID: 156833047}
-  _startingTime: 600
-  _timerText: {fileID: 342141429}
+  tileManager: {fileID: 0}
+  _startingTime: 60
+  _timerText: {fileID: 0}
 --- !u!4 &1013050348
 Transform:
   m_ObjectHideFlags: 0
@@ -1098,6 +1096,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1013050349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013050346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ff57afc3ee46846b0b71c7d9ed1381, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentPlayerIndex: 0
+  player1Name: Player 1
+  player2Name: Player 2
+  player1MaterialIndex: 0
+  player2MaterialIndex: 2
+  player1Color: {r: 1, g: 1, b: 1, a: 1}
+  player2Color: {r: 0, g: 0, b: 0, a: 1}
+  cameraSwitch: {fileID: 626119715}
+  cardManager: {fileID: 1990341170}
+  allAvailableCards:
+  - {fileID: 11400000, guid: 9c7289c1ab5ad27419ba7773423a4a58, type: 2}
+  - {fileID: 11400000, guid: 1ebc447bce7eb3b429c92b6197fc7de3, type: 2}
+  - {fileID: 11400000, guid: 121454d6c96b2fe47b75d307b9095dbe, type: 2}
+  - {fileID: 11400000, guid: 746abdddf92f0ad4ebb01bc71e228724, type: 2}
+  - {fileID: 11400000, guid: 8e75f284d86b6ac45babfd0d0e88b1d8, type: 2}
+  - {fileID: 11400000, guid: b51783394b74dbd4d9450b5a960468bb, type: 2}
+  - {fileID: 11400000, guid: f2e1fbe5bf61817488595d68e523f447, type: 2}
+  - {fileID: 11400000, guid: 19bfe271f1b77754db34a001a5f0a0d7, type: 2}
+  - {fileID: 11400000, guid: 0dc8fc7e3e2d5fc43907a934a420637b, type: 2}
+  - {fileID: 11400000, guid: 1751e51620cef504dbe62ad058ccc9e5, type: 2}
+  - {fileID: 11400000, guid: 4b7535df2c77e6c449d395887314d8cf, type: 2}
+  - {fileID: 11400000, guid: 43008e173b6f4c641b71def7637f1899, type: 2}
+  - {fileID: 11400000, guid: a35c624d815e660419cff843b1d38010, type: 2}
+  - {fileID: 11400000, guid: e33c8871db05d0d43b8f7d81156149be, type: 2}
+  - {fileID: 11400000, guid: f31004239ec05f447909fbbc68f54e6a, type: 2}
+  activeCardsPerPlayer: 3
+  cardRedistributionInterval: 5
+  turnCount: 1
+  turnTimer: 0
+  maxTurnTime: 30
+  enableTurnTimer: 0
+  autoSwitchTurns: 1
 --- !u!1 &1262955654
 GameObject:
   m_ObjectHideFlags: 0
@@ -1341,6 +1383,9 @@ MonoBehaviour:
   selectedCard: {fileID: 0}
   targetPiece: {fileID: 0}
   hoveredPiece: {fileID: 0}
+  targetConfirmSound: {fileID: 8300000, guid: c5cb2ac29e89dbf43a9b644caaad45e6, type: 3}
+  targetCancelSound: {fileID: 8300000, guid: 1ed8fb76fc64e4e46847348138782234, type: 3}
+  soundVolume: 0.7
 --- !u!1 &1867783534
 GameObject:
   m_ObjectHideFlags: 0
@@ -1689,6 +1734,12 @@ MonoBehaviour:
   player2StorageCards: []
   maxActiveCards: 3
   maxStorageCards: 5
+  cardHoverSound: {fileID: 8300000, guid: 35cf7766e9e2aa542811e896fde57989, type: 3}
+  cardSelectSound: {fileID: 8300000, guid: 490bfbc72255342408984f60044487de, type: 3}
+  cardActivateSound: {fileID: 8300000, guid: c5cb2ac29e89dbf43a9b644caaad45e6, type: 3}
+  cardSoundVolume: 0.5
+  isCardModeActive: 0
+  currentSelectedCard: {fileID: 0}
 --- !u!4 &1990341171
 Transform:
   m_ObjectHideFlags: 0
